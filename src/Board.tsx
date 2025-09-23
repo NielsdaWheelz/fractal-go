@@ -1,5 +1,6 @@
 const Board = ({ board, onCellClick }) => {
   const size = board.length;
+  // each cell is an object with row and col
   const cells = Array.from({ length: size * size }, (_, i) => ({
     row: Math.floor(i / size),
     col: i % size
@@ -7,6 +8,7 @@ const Board = ({ board, onCellClick }) => {
 
   return (
     <div className="inline-grid grid-cols-5 grid-rows-5">
+      {/* render each cell using its row-col object contents */}
       {cells.map(({ row, col }) => (
         <button
           key={`${row}-${col}`}
