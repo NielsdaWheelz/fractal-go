@@ -32,7 +32,11 @@ export const getEnemyNeighbours = (currentBoard, row, col) => {
     const [dr, dc] = neighbours[i]
     const nr = row + dr
     const nc = col + dc
-    if (currentBoard[nr][nc] !== currentBoard[row][col]) enemyNeighbours.push([nr, nc])
+    if (
+      isValidPosition(currentBoard, nr, nc) &&
+      currentBoard[nr][nc] !== null &&
+      currentBoard[nr][nc] !== currentBoard[row][col]) 
+    enemyNeighbours.push([nr, nc])
   }
 
   return enemyNeighbours

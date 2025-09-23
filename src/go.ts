@@ -32,7 +32,9 @@ export const makeMove = (gameState, row, col) => {
     adjacentEnemyGroups.push(getGroup(newBoard, r, c))
   }
 
-  newBoard = !hasLiberties(newBoard, group) ? removePieces(newBoard, group) : newBoard
+  for (const enemyGroup of adjacentEnemyGroups) {
+    newBoard = !hasLiberties(newBoard, enemyGroup) ? removePieces(newBoard, enemyGroup) : newBoard
+  }
 
   const newGameState = {
     currentPlayer: oldPlayer === "X" ? "O" : "X",
