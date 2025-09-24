@@ -1,0 +1,13 @@
+{
+    "games":
+    [
+        {
+            "id": 0,
+            "currentPlayer": "X",
+            "board": null,
+            "pass": { "x": false, "o": false },
+            "winner": null
+        
+        }
+    ]
+}

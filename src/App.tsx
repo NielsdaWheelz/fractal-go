@@ -1,6 +1,10 @@
 import { useState } from "react";
+import { QueryClient, QueryClientProvider, useQuery } from "@tanstack/react-query"
+
 import Board from "./Board.tsx";
 import { initialGameState, makeMove, calculateWinner } from "./go.ts"
+
+const queryClient = new QueryClient()
 
 export default function App() {
   const [gameState, setGameState] = useState(initialGameState);
@@ -12,7 +16,6 @@ export default function App() {
 
   const handlePass = () => {
     const newGameState = calculateWinner(gameState)
-    // set the gamestate to the return value of the winnerCalculator
     setGameState(newGameState)
   }
 
