@@ -1,47 +1,234 @@
 {
-  "game": {
-    "currentPlayer": "O",
-    "board": [
-      [
-        null,
-        null,
-        null,
-        null,
-        null
+  "games": [
+    {
+      "id": 0,
+      "currentPlayer": "X",
+      "board": [
+        [
+          null,
+          null,
+          null,
+          null,
+          null
+        ],
+        [
+          null,
+          null,
+          null,
+          null,
+          null
+        ],
+        [
+          null,
+          null,
+          null,
+          null,
+          null
+        ],
+        [
+          null,
+          null,
+          null,
+          null,
+          null
+        ],
+        [
+          null,
+          null,
+          null,
+          null,
+          null
+        ]
       ],
-      [
-        null,
-        null,
-        null,
-        null,
-        null
-      ],
-      [
-        null,
-        null,
-        null,
-        null,
-        null
-      ],
-      [
-        null,
-        null,
-        null,
-        "X",
-        null
-      ],
-      [
-        null,
-        null,
-        null,
-        null,
-        null
-      ]
-    ],
-    "pass": {
-      "x": false,
-      "o": false
+      "pass": {
+        "x": false,
+        "o": false
+      },
+      "winner": null
     },
-    "winner": null
-  }
+    {
+      "id": 1,
+      "currentPlayer": "X",
+      "board": [
+        [
+          null,
+          null,
+          null,
+          null,
+          null
+        ],
+        [
+          null,
+          null,
+          null,
+          null,
+          null
+        ],
+        [
+          null,
+          null,
+          null,
+          null,
+          null
+        ],
+        [
+          null,
+          null,
+          null,
+          null,
+          null
+        ],
+        [
+          null,
+          null,
+          null,
+          null,
+          null
+        ]
+      ],
+      "pass": {
+        "x": false,
+        "o": false
+      },
+      "winner": null
+    },
+    {
+      "id": 2,
+      "currentPlayer": "O",
+      "board": [
+        [
+          null,
+          null,
+          null,
+          null,
+          null
+        ],
+        [
+          null,
+          null,
+          null,
+          null,
+          "X"
+        ],
+        [
+          null,
+          null,
+          null,
+          null,
+          null
+        ],
+        [
+          null,
+          null,
+          null,
+          null,
+          null
+        ],
+        [
+          null,
+          null,
+          null,
+          null,
+          null
+        ]
+      ],
+      "pass": {
+        "x": false,
+        "o": false
+      },
+      "winner": null
+    },
+    {
+      "id": 3,
+      "currentPlayer": "O",
+      "board": [
+        [
+          null,
+          null,
+          null,
+          null,
+          null
+        ],
+        [
+          null,
+          null,
+          null,
+          "X",
+          null
+        ],
+        [
+          null,
+          null,
+          null,
+          null,
+          null
+        ],
+        [
+          null,
+          null,
+          null,
+          null,
+          null
+        ],
+        [
+          null,
+          null,
+          null,
+          null,
+          null
+        ]
+      ],
+      "pass": {
+        "x": false,
+        "o": false
+      },
+      "winner": null
+    },
+    {
+      "id": 4,
+      "currentPlayer": "O",
+      "board": [
+        [
+          null,
+          null,
+          null,
+          null,
+          null
+        ],
+        [
+          null,
+          null,
+          null,
+          null,
+          null
+        ],
+        [
+          null,
+          null,
+          null,
+          null,
+          null
+        ],
+        [
+          null,
+          null,
+          null,
+          "X",
+          null
+        ],
+        [
+          null,
+          null,
+          null,
+          null,
+          null
+        ]
+      ],
+      "pass": {
+        "x": false,
+        "o": false
+      },
+      "winner": null
+    }
+  ]
 }

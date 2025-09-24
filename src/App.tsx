@@ -1,93 +1,53 @@
-import Board from "./Board.tsx";
 import { initialGameState, makeMove, calculateWinner } from "./go.ts"
-import { QueryClient, QueryClientProvider, useQuery, useMutation } from "@tanstack/react-query"
+import { useQuery, useMutation } from "@tanstack/react-query"
+import { useState } from "react"
+import { getGames, getGame, createGame, postMove } from "./api.ts"
+import Game from "./Game.tsx"
+import List from "./List.tsx"
 
-const queryClient = new QueryClient()
 
-export default function App() {
-  return (
-    <QueryClientProvider client={queryClient}>
-      <Game />
-    </QueryClientProvider>
-  );
-}
+export default function App(props: { queryClient }) {
+  const [selectedGameId, setSelectedGameId] = useState(null)
 
-const Game = () => {
-
-  const getGame = async (id) => {
-    try {
-      const response = await fetch(`/game/${id}`)
-
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`)
-      }
-
-      const data = await response.json()
-      return data
-    } catch (error) {
-      console.error("Error", error)
-      throw error
-    }
-  }
-
-  const postMove = async (id, row, col) => {
-    try {
-      const response = await fetch("/move", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ id: id, row: row, col: col})
-      })
-
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`)
-      }
-
-      const data = await response.json()
-      return data
-    } catch (error) {
-      console.error("error", error)
-      throw error
-    }
-  }
-
-  const { isPending, error, data } = useQuery({
-    queryKey: ['gameData'],
+  const getGameQuery = useQuery({
+    queryKey: ['game', selectedGameId],
     queryFn: () =>
-      getGame(0),
+      getGame(selectedGameId), enabled: !!selectedGameId,
   })
 
-  const mutation = useMutation({
+  const getGamesQuery = useQuery({
+    queryKey: ['games'],
+    queryFn: () =>
+      getGames(),
+  })
+
+  const moveMutation = useMutation({
     mutationFn: ({ id, row, col }) => postMove(id, row, col),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['gameData'] })
+      props.queryClient.invalidateQueries({ queryKey: ['game', selectedGameId] })
     }
   })
 
-  if (isPending) return "Loading..."
+  const createGameMutation = useMutation({
+    mutationFn: () => createGame(),
+    onSuccess: () => {
+      props.queryClient.invalidateQueries({ queryKey: ['games'] })
+    }
+  })
 
-  if (error) return "Error..." + error.message
+  console.log(getGamesQuery.data)
 
-  const handleCellClick = (row: number, col: number) => {
-    if (!data) return;
-    mutation.mutate({
-      id: data.id,
-      row: row,
-      col: col
-    })
-  };
+  if (getGamesQuery.isLoading) return "Loading..."
+  if (!getGamesQuery.data) return "No games found"
 
-  const handlePass = () => {
-    // const newGameState = calculateWinner(gameState)
-    // setGameState(newGameState)
-  }
+  if (getGameQuery.error) return "Error..." + getGameQuery.error.message
+  if (getGamesQuery.error) return "Error..." + getGamesQuery.error.message
 
   return (
-    <div className="p-4">
-      <Board board={data.board} onCellClick={handleCellClick} />
-      <button onClick={handlePass}>Pass</button>
-      {(data.pass["x"] && data.pass["o"] && data.winner) && <div>{data.winner} Wins!</div>}
-    </div>
+    selectedGameId ? (
+      <Game data={getGameQuery.data} moveMutation={ moveMutation } />
+    ) : (
+      <List data={getGamesQuery.data} createGameMutation={ createGameMutation } />
+    )
   )
 }

@@ -9,14 +9,16 @@ const initialBoard = Array.from(
       { length: size },
       () => null))
 
-export const initialGameState = {
-  currentPlayer: "X",
-  board: initialBoard,
-  pass: { x: false, o: false },
-  winner: null
-}
+// export const initialGameState = (id) => {
+//   id: id
+//   currentPlayer: "X",
+//   board: initialBoard,
+//   pass: { x: false, o: false },
+//   winner: null
+// }
 
 export const makeMove = (gameState, row, col) => {
+  const gameId = gameState.id
   const oldPlayer = gameState.currentPlayer
   const oldBoard = gameState.board
 
@@ -39,6 +41,7 @@ export const makeMove = (gameState, row, col) => {
   }
 
   const newGameState = {
+    ...gameState,
     currentPlayer: oldPlayer === "X" ? "O" : "X",
     board: newBoard,
     pass: { x: false, o: false },

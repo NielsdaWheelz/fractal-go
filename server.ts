@@ -1,11 +1,28 @@
 import express from "express"
 import ViteExpress from "vite-express"
 import data from "./data.json"
-// import fs from "fs"
+import fs from "fs"
 
-let game = data.game
+let games = data.games
+let game
 
-// let games = data.games
+const generatedId = () => {
+    const maxId = games.length > 0
+    ? Math.max(...games.map(n => Number(n.id)))
+    : 0
+    return String(maxId + 1)
+}
+
+const blankGame = {
+    "id": generatedId,
+    "currentPlayer": "X",
+    "board": [[null,null,null,null,null],[null,null,null,null,null],[null,null,null,null,null],[null,null,null,null,null],[null,null,null,null,null]],
+    "pass": {
+      "x": false,
+      "o": false
+    },
+    "winner": null
+}
 
 import { makeMove } from "./src/go.ts"
 
@@ -13,21 +30,28 @@ const app = express()
 
 app.use(express.json())
 
-app.get("/message", (_, res) => res.send("Hello"))
+app.get("/games", (req, res) => {
+    res.json(games)
+})
 
 app.get("/game/:id", (req, res) => {
-    // game = data.games.find(game => game.id === Number(req.params.id))
-    // game = data.game
+    game = data.games.find(game => game.id === Number(req.params.id))
     res.json(game)
 })
 
+app.post("/games", (req, res) => {
+    const newGame = blankGame
+    games = games.concat(newGame)
+    fs.writeFileSync("data.json", JSON.stringify({games: games}, null, 2))
+    res.json(newGame)
+})
+
 app.post("/move", (req, res) => {
-    // game = data.games.find(game => game.id === Number(req.body.id))
-    // game = data.game
+    game = data.games.find(game => game.id === Number(req.body.id))
     if (game.board[req.body.row][req.body.col] !== null || (game.pass["x"] && game.pass["o"])) return
-    game = makeMove(game, req.body.row, req.body.col)
-    // games = games.concat(game)
-    // fs.writeFileSync("data.json", JSON.stringify({game: game}, null, 2))
+    const newGame = makeMove(game, req.body.row, req.body.col)
+    games = games.concat(newGame)
+    fs.writeFileSync("data.json", JSON.stringify({games: games}, null, 2))
     res.json(game)
 })
 
