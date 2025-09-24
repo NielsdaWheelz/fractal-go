@@ -52,8 +52,13 @@ export const makeMove = (gameState, row, col) => {
 }
 
 export const calculateWinner = (gameState) => {
+  const oldPlayer = gameState.currentPlayer
+
   // set the pass of the current player to true
-  let newGameState = {...gameState, pass: {...gameState.pass, [gameState.currentPlayer]: true}}
+  let newGameState = {...gameState,
+    currentPlayer: oldPlayer === "X" ? "O" : "X",
+    pass: {...gameState.pass, [gameState.currentPlayer.toLowerCase()]: true}}
+  
   if (newGameState.pass["x"] && newGameState.pass["o"]) {
     let xScore = 0
     let oScore = 0
@@ -65,8 +70,10 @@ export const calculateWinner = (gameState) => {
     if ((xScore - oScore) > 0) {
       return {...newGameState, winner: "x"}
       // gameState where winner: "x"
-    } else {
+    } else if ((xScore - oScore) < 0){
       return {...newGameState, winner: "o"}
+    } else if ((xScore - oScore) === 0) {
+      return {...newGameState, winner: "tie"}
     }
   }
   return newGameState
