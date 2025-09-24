@@ -48,8 +48,8 @@ app.post("/move", (req, res) => {
     game = games.find(game => game.id === Number(req.body.id))
     if (game.board[req.body.row][req.body.col] !== null || (game.pass["x"] && game.pass["o"])) return
     const newGame = makeMove(game, req.body.row, req.body.col)
-    const newGames = games.map(game => game.id === newGame.id ? newGame : game)
-    fs.writeFileSync("data.json", JSON.stringify({games: newGames}, null, 2))
+    games = games.map(game => game.id === newGame.id ? newGame : game)
+    fs.writeFileSync("data.json", JSON.stringify({games: games}, null, 2))
     res.json(game)
 })
 
