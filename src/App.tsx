@@ -1,6 +1,6 @@
-import { QueryClient, QueryClientProvider, useQuery, useMutation } from "@tanstack/react-query"
 import Board from "./Board.tsx";
 import { initialGameState, makeMove, calculateWinner } from "./go.ts"
+import { QueryClient, QueryClientProvider, useQuery, useMutation } from "@tanstack/react-query"
 
 const queryClient = new QueryClient()
 
@@ -28,7 +28,28 @@ const Game = () => {
       console.error("Error", error)
       throw error
     }
+  }
 
+  const postMove = async (id, row, col) => {
+    try {
+      const response = await fetch("/move", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ id: id, row: row, col: col})
+      })
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`)
+      }
+
+      const data = await response.json()
+      return data
+    } catch (error) {
+      console.error("error", error)
+      throw error
+    }
   }
 
   const { isPending, error, data } = useQuery({
@@ -37,30 +58,31 @@ const Game = () => {
       getGame(0),
   })
 
-  // const mutation = useMutation({
-  //   mutationFn: fetch("/move", req).then((res) =>
-  //   res.json()),
-  //   onSuccess: () => {
-  //     queryClient.invalidateQueries({ queryKey: ['gameData'] })
-  //   }
-  // })
+  const mutation = useMutation({
+    mutationFn: ({ id, row, col }) => postMove(id, row, col),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['gameData'] })
+    }
+  })
 
   if (isPending) return "Loading..."
 
   if (error) return "Error..." + error.message
 
   const handleCellClick = (row: number, col: number) => {
-    // mutation.mutate({
-    //   id: data.id,
-    //   row: row,
-    //   col: col
-    // })
+    if (!data) return;
+    mutation.mutate({
+      id: data.id,
+      row: row,
+      col: col
+    })
   };
 
   const handlePass = () => {
     // const newGameState = calculateWinner(gameState)
     // setGameState(newGameState)
   }
+
   return (
     <div className="p-4">
       <Board board={data.board} onCellClick={handleCellClick} />
