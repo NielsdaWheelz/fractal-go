@@ -3,8 +3,6 @@ import { useQuery, useMutation } from "@tanstack/react-query"
 import { useState } from "react"
 import { getGames, getGame, createGame, postMove } from "./api.ts"
 import Game from "./Game.tsx"
-import List from "./List.tsx"
-
 
 export default function App(props: { queryClient }) {
   const [selectedGameId, setSelectedGameId] = useState(null)
@@ -30,12 +28,25 @@ export default function App(props: { queryClient }) {
 
   const createGameMutation = useMutation({
     mutationFn: () => createGame(),
-    onSuccess: () => {
+    onSuccess: (data) => {
       props.queryClient.invalidateQueries({ queryKey: ['games'] })
+      setSelectedGameId(data.id)
     }
   })
 
-  console.log(getGamesQuery.data)
+  const handleCreateGame = () => {
+    const newGame = createGameMutation.mutate()
+    setSelectedGameId(newGame.id)
+  }
+
+  const handleOpenGame = (id) => {
+    setSelectedGameId(id)
+  }
+
+  const games = getGamesQuery.data || []
+  const gameElements = games.map(game => (
+      <li key={game.id} onClick={ () => handleOpenGame(game.id) }>id: { game.id }, turn: { game.currentPlayer }, Winner: { game.winner || "undecided" }</li>
+  ))
 
   if (getGamesQuery.isLoading) return "Loading..."
   if (!getGamesQuery.data) return "No games found"
@@ -46,8 +57,12 @@ export default function App(props: { queryClient }) {
   return (
     selectedGameId ? (
       <Game data={getGameQuery.data} moveMutation={ moveMutation } />
-    ) : (
-      <List data={getGamesQuery.data} createGameMutation={ createGameMutation } />
-    )
+    ) : 
+    <>
+      <ul>
+          { gameElements }
+      </ul>
+      <button onClick={handleCreateGame}>Create New Game</button>
+    </>
   )
 }
