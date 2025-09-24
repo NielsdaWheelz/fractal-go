@@ -59,7 +59,7 @@ export const postPass = async (id) => {
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify(id)
+      body: JSON.stringify({ id: id })
     })
 
     if (!response.ok) {

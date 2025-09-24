@@ -191,23 +191,23 @@
         [
           null,
           null,
+          "O",
           null,
-          null,
-          null
+          "X"
         ],
         [
           null,
+          "O",
           null,
-          null,
-          null,
+          "O",
           null
         ],
         [
+          "X",
           null,
+          "O",
           null,
-          null,
-          null,
-          null
+          "X"
         ],
         [
           null,
@@ -225,10 +225,10 @@
         ]
       ],
       "pass": {
-        "x": false,
-        "o": false
+        "x": true,
+        "o": true
       },
-      "winner": null
+      "winner": "tie"
     },
     {
       "id": 5,
@@ -328,21 +328,21 @@
       "board": [
         [
           null,
+          "O",
+          "X",
           null,
+          null
+        ],
+        [
+          null,
+          "X",
           null,
           null,
           null
         ],
         [
           null,
-          null,
-          null,
-          null,
-          null
-        ],
-        [
-          null,
-          null,
+          "O",
           null,
           null,
           null
@@ -420,23 +420,23 @@
       "board": [
         [
           null,
+          "X",
           null,
-          null,
-          null,
+          "X",
           null
         ],
         [
+          "O",
           null,
           null,
           null,
-          null,
-          null
+          "O"
         ],
         [
           null,
+          "O",
           null,
-          null,
-          null,
+          "X",
           null
         ],
         [

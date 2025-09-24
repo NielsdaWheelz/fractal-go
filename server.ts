@@ -46,11 +46,13 @@ app.post("/games", (req, res) => {
 
 app.post("/move", (req, res) => {
     game = games.find(game => game.id === Number(req.body.id))
-    if (game.board[req.body.row][req.body.col] !== null || (game.pass["x"] && game.pass["o"])) return
+    if (game.board[req.body.row][req.body.col] !== null || (game.pass["x"] && game.pass["o"])) {
+        return res.status(400).json({ error: "Invalid move" })
+    }
     const newGame = makeMove(game, req.body.row, req.body.col)
     games = games.map(game => game.id === newGame.id ? newGame : game)
     fs.writeFileSync("data.json", JSON.stringify({games: games}, null, 2))
-    res.json(game)
+    res.json(newGame)
 })
 
 app.post("/pass", (req, res) => {
@@ -59,7 +61,7 @@ app.post("/pass", (req, res) => {
     const newGame = calculateWinner(game)
     games = games.map(game => game.id === newGame.id ? newGame : game)
     fs.writeFileSync("data.json", JSON.stringify({games: games}, null, 2))
-    res.json(game)
+    res.json(newGame)
 })
 
 
