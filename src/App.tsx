@@ -6,12 +6,12 @@ import Game from "./Game.tsx"
 // import { initialGameState, makeMove, calculateWinner } from "./go.ts"
 
 export default function App(props: { queryClient }) {
-  const [selectedGameId, setSelectedGameId] = useState(null)
+  const [selectedGame, setSelectedGame] = useState(null)
 
   const getGameQuery = useQuery({
-    queryKey: ['game', selectedGameId],
+    queryKey: ['game', selectedGame],
     queryFn: () =>
-      getGame(selectedGameId), enabled: !!selectedGameId,
+      getGame(selectedGame.id), enabled: !!selectedGame,
   })
 
   const getGamesQuery = useQuery({
@@ -23,7 +23,7 @@ export default function App(props: { queryClient }) {
   const moveMutation = useMutation({
     mutationFn: ({ id, row, col }) => postMove(id, row, col),
     onSuccess: () => {
-      props.queryClient.invalidateQueries({ queryKey: ['game', selectedGameId] })
+      props.queryClient.invalidateQueries({ queryKey: ['game', selectedGame] })
     }
   })
 
@@ -31,29 +31,28 @@ export default function App(props: { queryClient }) {
     mutationFn: () => createGame(),
     onSuccess: (data) => {
       props.queryClient.invalidateQueries({ queryKey: ['games'] })
-      setSelectedGameId(data.id)
+      setSelectedGame(data)
     }
   })
 
   const handleCreateGame = () => {
-    console.log("handleCreateGame")
     createGameMutation.mutate()
   }
 
-  const handleOpenGame = (id) => {
-    console.log("handleOpenGame", id)
-    setSelectedGameId(id)
+  const handleOpenGame = (game) => {
+    setSelectedGame(game)
   }
+
   if (getGamesQuery.isLoading) return "Loading..."
   if (getGamesQuery.error) return "Error..." + getGamesQuery.error.message
   if (!getGamesQuery.data) return "No games found"
 
-  if (selectedGameId) {
+  if (selectedGame) {
     if (getGameQuery.isLoading) return "Loading..."
     if (getGameQuery.error) return "Error..." + getGameQuery.error.message
     if (!getGameQuery.data) return "Game not found"
   
-    return <Game data={getGameQuery.data} moveMutation={ moveMutation } setFunc={ setSelectedGameId } />
+    return <Game data={getGameQuery.data} moveMutation={ moveMutation } setFunc={ setSelectedGame } />
   }
 
   return (
