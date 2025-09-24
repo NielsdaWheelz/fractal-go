@@ -12,8 +12,7 @@ const initialBoard = Array.from(
 export const initialGameState = {
   currentPlayer: "X",
   board: initialBoard,
-  xSurrender: false,
-  oSurrender: false,
+  pass: { x: false, o: false },
   winner: null
 }
 
@@ -42,27 +41,30 @@ export const makeMove = (gameState, row, col) => {
   const newGameState = {
     currentPlayer: oldPlayer === "X" ? "O" : "X",
     board: newBoard,
-    xSurrender: false,
-    oSurrender: false
+    pass: { x: false, o: false },
+    winner: null
   }
 
   return newGameState
 }
 
 export const calculateWinner = (gameState) => {
-  if (gameState.xSurrender && gameState.oSurrender) {
+  // set the pass of the current player to true
+  let newGameState = {...gameState, pass: {...gameState.pass, [gameState.currentPlayer]: true}}
+  if (newGameState.pass["x"] && newGameState.pass["o"]) {
     let xScore = 0
     let oScore = 0
-    for (let i = 0; i < gameState.board.length; i++) {
-      for (let j = 0; j < gameState.board[i].length; j++) {
-        gameState.board[i][j] === "X" ? xScore++ : oScore++
+    for (let i = 0; i < newGameState.board.length; i++) {
+      for (let j = 0; j < newGameState.board[i].length; j++) {
+        if (newGameState.board[i][j] === "X") {xScore++} else if (newGameState.board[i][j] === "O") {oScore++}
       }
     }
     if ((xScore - oScore) > 0) {
-      return "X"
+      return {...newGameState, winner: "x"}
+      // gameState where winner: "x"
     } else {
-      return "O"
+      return {...newGameState, winner: "o"}
     }
   }
-  return false
+  return newGameState
 }
