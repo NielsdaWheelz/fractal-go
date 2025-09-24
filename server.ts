@@ -13,7 +13,7 @@ const generatedId = () => {
     return Number(maxId + 1)
 }
 
-import { makeMove } from "./src/go.ts"
+import { makeMove, calculateWinner } from "./src/go.ts"
 
 const app = express()
 
@@ -52,5 +52,15 @@ app.post("/move", (req, res) => {
     fs.writeFileSync("data.json", JSON.stringify({games: games}, null, 2))
     res.json(game)
 })
+
+app.post("/pass", (req, res) => {
+    console.log(req.body)
+    game = games.find(game => game.id === Number(req.body.id))
+    const newGame = calculateWinner(game)
+    games = games.map(game => game.id === newGame.id ? newGame : game)
+    fs.writeFileSync("data.json", JSON.stringify({games: games}, null, 2))
+    res.json(game)
+})
+
 
 ViteExpress.listen(app, 3000, () => console.log("listening..."))

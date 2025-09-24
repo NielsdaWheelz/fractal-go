@@ -1,6 +1,6 @@
 import { useState } from "react"
 import { useQuery, useMutation } from "@tanstack/react-query"
-import { getGames, getGame, createGame, postMove } from "./api.ts"
+import { getGames, getGame, createGame, postMove, postPass } from "./api.ts"
 import List from "./List.tsx"
 import Game from "./Game.tsx"
 // import { initialGameState, makeMove, calculateWinner } from "./go.ts"
@@ -22,6 +22,13 @@ export default function App(props: { queryClient }) {
 
   const moveMutation = useMutation({
     mutationFn: ({ id, row, col }) => postMove(id, row, col),
+    onSuccess: () => {
+      props.queryClient.invalidateQueries({ queryKey: ['game', selectedGame] })
+    }
+  })
+
+  const passMutation = useMutation({
+    mutationFn: ( id ) => postPass(id),
     onSuccess: () => {
       props.queryClient.invalidateQueries({ queryKey: ['game', selectedGame] })
     }
@@ -52,7 +59,7 @@ export default function App(props: { queryClient }) {
     if (getGameQuery.error) return "Error..." + getGameQuery.error.message
     if (!getGameQuery.data) return "Game not found"
   
-    return <Game data={getGameQuery.data} moveMutation={ moveMutation } setFunc={ setSelectedGame } />
+    return <Game data={selectedGame} moveMutation={ moveMutation } passMutation={ passMutation } setFunc={ setSelectedGame } />
   }
 
   return (

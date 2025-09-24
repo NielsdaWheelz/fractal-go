@@ -52,6 +52,28 @@ export const postMove = async (id, row, col) => {
     }
 }
 
+export const postPass = async (id) => {
+  try {
+    const response = await fetch("/pass", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(id)
+    })
+
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`)
+    }
+
+    const game = await response.json()
+    return game
+  } catch (error) {
+    console.error("error", error)
+    throw error
+  }
+}
+
 export const createGame = async () => {
     try {
       const response = await fetch("/games", {

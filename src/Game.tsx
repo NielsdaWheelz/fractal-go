@@ -1,6 +1,6 @@
 import Board from "./Board.tsx";
 
-const Game = (props: { data, moveMutation, setFunc }) => {
+const Game = (props: { data, moveMutation, passMutation, setFunc }) => {
     
     if (!props.data) return null;
 
@@ -14,10 +14,14 @@ const Game = (props: { data, moveMutation, setFunc }) => {
       };
       
       const handlePass = () => {
-        // const newGameState = calculateWinner(gameState)
-        // setGameState(newGameState)
+        if (!props.data) return;
+        props.passMutation.mutate({
+          id: props.data.id
+        })
       }
 
+      console.log(props.data)
+      
     return (
         <div className="p-4">
             <button onClick={() => props.setFunc(null)}>Back</button>
