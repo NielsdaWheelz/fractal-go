@@ -10,18 +10,7 @@ const generatedId = () => {
     const maxId = games.length > 0
     ? Math.max(...games.map(n => Number(n.id)))
     : 0
-    return String(maxId + 1)
-}
-
-const blankGame = {
-    "id": generatedId,
-    "currentPlayer": "X",
-    "board": [[null,null,null,null,null],[null,null,null,null,null],[null,null,null,null,null],[null,null,null,null,null],[null,null,null,null,null]],
-    "pass": {
-      "x": false,
-      "o": false
-    },
-    "winner": null
+    return Number(maxId + 1)
 }
 
 import { makeMove } from "./src/go.ts"
@@ -35,23 +24,32 @@ app.get("/games", (req, res) => {
 })
 
 app.get("/game/:id", (req, res) => {
-    game = data.games.find(game => game.id === Number(req.params.id))
+    game = games.find(game => game.id === Number(req.params.id))
     res.json(game)
 })
 
 app.post("/games", (req, res) => {
-    const newGame = blankGame
+    const newGame = {
+        "id": generatedId(),
+        "currentPlayer": "X",
+        "board": [[null,null,null,null,null],[null,null,null,null,null],[null,null,null,null,null],[null,null,null,null,null],[null,null,null,null,null]],
+        "pass": {
+          "x": false,
+          "o": false
+        },
+        "winner": null
+    }
     games = games.concat(newGame)
     fs.writeFileSync("data.json", JSON.stringify({games: games}, null, 2))
     res.json(newGame)
 })
 
 app.post("/move", (req, res) => {
-    game = data.games.find(game => game.id === Number(req.body.id))
+    game = games.find(game => game.id === Number(req.body.id))
     if (game.board[req.body.row][req.body.col] !== null || (game.pass["x"] && game.pass["o"])) return
     const newGame = makeMove(game, req.body.row, req.body.col)
-    games = games.concat(newGame)
-    fs.writeFileSync("data.json", JSON.stringify({games: games}, null, 2))
+    const newGames = games.map(game => game.id === newGame.id ? newGame : game)
+    fs.writeFileSync("data.json", JSON.stringify({games: newGames}, null, 2))
     res.json(game)
 })
 
