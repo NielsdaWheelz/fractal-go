@@ -60,9 +60,9 @@ export default function App(props: { queryClient }) {
     if (!getGameQuery.data) return "Game not found"
   
     return <Game data={ getGameQuery.data } moveMutation={ moveMutation } passMutation={ passMutation } setFunc={ setSelectedGame } />
+  } else {
+    return (
+      <List data={ getGamesQuery.data } handleOpenGame={ handleOpenGame } handleCreateGame={ handleCreateGame }/>
+    )
   }
-
-  return (
-    <List data={ getGamesQuery.data } handleOpenGame={ handleOpenGame } handleCreateGame={ handleCreateGame }/>
-  )
 }

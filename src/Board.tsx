@@ -14,7 +14,7 @@ const Board = ({ board, onCellClick }) => {
           key={`${row}-${col}`}
           onClick={() => onCellClick(row, col)}
           className={`
-            w-16 aspect-square
+            w-full aspect-square
             flex items-center justify-center
             ${row < size - 1 ? "border-b" : ""}
             ${col < size - 1 ? "border-r" : ""}

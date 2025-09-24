@@ -21,14 +21,19 @@ const Game = (props: { data, moveMutation, passMutation, setFunc }) => {
       }
 
       console.log(props.data)
-      
+
     return (
-        <div className="p-4">
-            <button onClick={() => props.setFunc(null)}>Back</button>
-            <Board board={props.data.board} onCellClick={handleCellClick} />
-            <button onClick={handlePass}>Pass</button>
-            {(props.data.pass["x"] && props.data.pass["o"] && props.data.winner) && <div>{props.data.winner} Wins!</div>}
+      <div className="m-20 p-4 flex flex-col">
+        <div><button onClick={() => props.setFunc(null)}>Go Back</button></div>
+        <div className="flex flex-col items-center">
+          <Board board={props.data.board} onCellClick={handleCellClick} />
         </div>
+        <div className="flex flex-row justify-between">
+          <div>Turn: { props.data.currentPlayer }</div>
+          <div><button onClick={handlePass}>Pass</button></div>
+        </div>
+        {(props.data.pass["x"] && props.data.pass["o"] && props.data.winner) && <div>{props.data.winner} Wins!</div>}
+      </div>
     )
 }
 
