@@ -1,8 +1,9 @@
-import { initialGameState, makeMove, calculateWinner } from "./go.ts"
-import { useQuery, useMutation } from "@tanstack/react-query"
 import { useState } from "react"
+import { useQuery, useMutation } from "@tanstack/react-query"
 import { getGames, getGame, createGame, postMove } from "./api.ts"
+import List from "./List.tsx"
 import Game from "./Game.tsx"
+// import { initialGameState, makeMove, calculateWinner } from "./go.ts"
 
 export default function App(props: { queryClient }) {
   const [selectedGameId, setSelectedGameId] = useState(null)
@@ -35,34 +36,27 @@ export default function App(props: { queryClient }) {
   })
 
   const handleCreateGame = () => {
-    const newGame = createGameMutation.mutate()
-    setSelectedGameId(newGame.id)
+    console.log("handleCreateGame")
+    createGameMutation.mutate()
   }
 
   const handleOpenGame = (id) => {
+    console.log("handleOpenGame", id)
     setSelectedGameId(id)
   }
-
-  const games = getGamesQuery.data || []
-  const gameElements = games.map(game => (
-      <li key={game.id} onClick={ () => handleOpenGame(game.id) }>id: { game.id }, turn: { game.currentPlayer }, Winner: { game.winner || "undecided" }</li>
-  ))
-
   if (getGamesQuery.isLoading) return "Loading..."
+  if (getGamesQuery.error) return "Error..." + getGamesQuery.error.message
   if (!getGamesQuery.data) return "No games found"
 
-  if (getGameQuery.error) return "Error..." + getGameQuery.error.message
-  if (getGamesQuery.error) return "Error..." + getGamesQuery.error.message
+  if (selectedGameId) {
+    if (getGameQuery.isLoading) return "Loading..."
+    if (getGameQuery.error) return "Error..." + getGameQuery.error.message
+    if (!getGameQuery.data) return "Game not found"
+  
+    return <Game data={getGameQuery.data} moveMutation={ moveMutation } setFunc={ setSelectedGameId } />
+  }
 
   return (
-    selectedGameId ? (
-      <Game data={getGameQuery.data} moveMutation={ moveMutation } />
-    ) : 
-    <>
-      <ul>
-          { gameElements }
-      </ul>
-      <button onClick={handleCreateGame}>Create New Game</button>
-    </>
+    <List data={getGamesQuery.data} handleOpenGame={ handleOpenGame } handleCreateGame={ handleCreateGame }/>
   )
 }
