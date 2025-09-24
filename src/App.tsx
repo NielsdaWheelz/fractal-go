@@ -7,6 +7,27 @@ import { initialGameState, makeMove, calculateWinner } from "./go.ts"
 const queryClient = new QueryClient()
 
 export default function App() {
+  return (
+    <QueryClientProvider client={queryClient}>
+      <Page />
+    </QueryClientProvider>
+  );
+}
+
+const Page = () => {
+
+  const { isPending, error, data } = useQuery({
+    queryKey: ['gameData'],
+    queryFn: () =>
+      fetch("/game").then((res) =>
+      res.json(),
+      ),
+  })
+
+  if (isPending) return "Loading..."
+
+  if (error) return "Error..." + error.message
+
   const [gameState, setGameState] = useState(initialGameState);
 
   const handleCellClick = (row: number, col: number) => {
@@ -18,12 +39,11 @@ export default function App() {
     const newGameState = calculateWinner(gameState)
     setGameState(newGameState)
   }
-
   return (
     <div className="p-4">
-      <Board board={gameState.board} onCellClick={handleCellClick} />
+      <Board board={data.board} onCellClick={handleCellClick} />
       <button onClick={handlePass}>Pass</button>
-      {(gameState.pass["x"] && gameState.pass["o"] && gameState.winner) && <div>{gameState.winner} Wins!</div>}
+      {(data.pass["x"] && data.pass["o"] && data.winner) && <div>{data.winner} Wins!</div>}
     </div>
-  );
+  )
 }
