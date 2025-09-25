@@ -3,27 +3,25 @@ import type { GameState } from "./types.ts"
 const List = (props: { data: GameState[]; handleOpenGame: (game: GameState) => void }) => {
   const games = props.data || []
 
-  return (
-    <div className="">
-      <ul className="">
-        {games.map((game: GameState) => (
-          <li key={game.id}>
-            <button onClick={() => props.handleOpenGame(game)} className="">
+  const gameElements = (
+    games.map((game: GameState) => (
+      <li key={game.id} className="bg-gray-200 border-gray-400 py-1 px-2 rounded-md hover:bg-gray-400">
+        <button onClick={() => props.handleOpenGame(game)} className="w-full">
+            <div className="flex flex-row justify-between">
+              <div className="">Game #{game.id}</div>
               <div className="">
-                <div className="">
-                  <div className="">Game #{game.id}</div>
-                  <span className="">
-                    {game.winner ? `Winner: ${game.winner}` : `Turn: ${game.currentPlayer}`}
-                  </span>
-                </div>
-                <div className="">
-                </div>
+                {game.winner ? game.winner === "Draw" ? `${game.winner}!` : `${game.winner} Won!` : `${game.currentPlayer}'s turn`}
               </div>
-            </button>
-          </li>
-        ))}
-      </ul>
-    </div>
+            </div>
+        </button>
+      </li>
+    ))
+  )
+
+  return (
+    <ul className="flex flex-col p-4 m-4 gap-2">
+      { gameElements }
+    </ul>
   )
 }
 

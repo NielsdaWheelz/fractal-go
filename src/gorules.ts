@@ -3,6 +3,31 @@ export const isValidPosition = (board, row, col) => {
          col >= 0 && col < board[0].length;
 }
 
+export const isPlayablePosition = (game, row, col) => {
+  const player = game.currentPlayer
+  const oldBoard = game.board
+
+  if (oldBoard[row][col] === "X" || oldBoard[row][col] === "O") return false
+
+  let newBoard = oldBoard.map((rowArray, rowIndex) =>
+    rowArray.map((cell, colIndex) =>
+      rowIndex === row && colIndex === col ? player : cell
+    )
+  );
+
+  const enemyNeighbours = getEnemyNeighbours(newBoard, row, col)
+  for (const [er, ec] of enemyNeighbours) {
+    const enemyGroup = getGroup(newBoard, er, ec)
+    if (!hasLiberties(newBoard, enemyGroup)) {
+      newBoard = removePieces(newBoard, enemyGroup)
+    }
+  }
+
+  const newGroup = getGroup(newBoard, row, col)
+
+  return hasLiberties(newBoard, newGroup)
+}
+
 export const getGroup = (currentBoard, row, col) => {
   const targetColour = currentBoard[row][col]
   const group = []
