@@ -74,13 +74,14 @@ export const postPass = async (id) => {
   }
 }
 
-export const createGame = async () => {
+export const createGame = async (size) => {
     try {
       const response = await fetch("/games", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-        }
+        },
+        body: JSON.stringify({ size: size })
       })
 
       if (!response.ok) {
