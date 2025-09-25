@@ -1,9 +1,17 @@
 import express from "express"
 import ViteExpress from "vite-express"
-import data from "./data.json"
 import fs from "fs"
 
-let games = data.games
+// Initialize games by reading from data.json at runtime, not via module import
+let games: any[] = []
+try {
+    const raw = fs.readFileSync("data.json", "utf-8")
+    const parsed = JSON.parse(raw)
+    games = Array.isArray(parsed?.games) ? parsed.games : []
+} catch (err) {
+    // If file is missing or invalid, start with empty games list
+    games = []
+}
 let game
 
 const generatedId = () => {
