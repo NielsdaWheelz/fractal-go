@@ -1,6 +1,7 @@
 import Board from "./Board.tsx";
+import type { GameState } from "./types.ts";
 
-const Game = (props: { data, moveMutation, passMutation, setFunc }) => {
+const GameComponent = (props: { data: GameState, moveMutation, passMutation }) => {
     
     if (!props.data) return null;
 
@@ -21,15 +22,21 @@ const Game = (props: { data, moveMutation, passMutation, setFunc }) => {
       }
 
       console.log(props.data)
-      
+
     return (
-        <div className="p-4">
-            <button onClick={() => props.setFunc(null)}>Back</button>
-            <Board board={props.data.board} onCellClick={handleCellClick} />
-            <button onClick={handlePass}>Pass</button>
-            {(props.data.pass["x"] && props.data.pass["o"] && props.data.winner) && <div>{props.data.winner} Wins!</div>}
+      <div className="">
+        <div className="">
+          <Board board={props.data.board} onCellClick={handleCellClick} />
         </div>
+        <div className="">
+          <div className="">Turn: { props.data.currentPlayer }</div>
+          <button className="" onClick={handlePass}>Pass</button>
+        </div>
+        {(props.data.pass["x"] && props.data.pass["o"] && props.data.winner) && (
+          <div className="">{props.data.winner} Wins!</div>
+        )}
+      </div>
     )
 }
 
-export default Game
+export default GameComponent
