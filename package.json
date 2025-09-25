@@ -13,8 +13,11 @@
     "@tailwindcss/vite": "^4.1.13",
     "@tanstack/react-query": "^5.90.2",
     "express": "^5.1.0",
+    "http": "^0.0.1-security",
     "react": "^19.1.1",
     "react-dom": "^19.1.1",
+    "socket.io": "^4.8.1",
+    "socket.io-client": "^4.8.1",
     "tailwindcss": "^4.1.13",
     "vite-express": "^0.21.1"
   },

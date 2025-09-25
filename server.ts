@@ -1,6 +1,18 @@
 import express from "express"
 import ViteExpress from "vite-express"
 import fs from "fs"
+import http from "http"
+import { Server } from "socket.io"
+
+const app = express()
+// const server = app.listen(3000, "0.0.0.0")
+// --- Socket.IO Setup ---
+const io = new Server({
+    cors: {
+        origin: "*", // Change this if you want stricter cross-origin rules
+    }
+})
+io.listen(4000);
 
 // Initialize games by reading from data.json at runtime, not via module import
 let games: any[] = []
@@ -23,7 +35,19 @@ const generatedId = () => {
 
 import { makeMove, calculateWinner } from "./src/go.ts"
 
-const app = express()
+
+
+io.on("connection", (socket) => {
+    console.log("Socket.IO client connected:", socket.id)
+
+    // Optionally send initial state
+    socket.emit("init", games)
+
+    socket.on("disconnect", () => {
+        console.log("Socket.IO client disconnected:", socket.id)
+    })
+})
+
 
 app.use(express.json())
 
@@ -78,5 +102,5 @@ app.post("/pass", (req, res) => {
     res.json(newGame)
 })
 
-
 ViteExpress.listen(app, 3000, () => console.log("listening..."))
+// ViteExpress.bind(app, server);
