@@ -5,14 +5,14 @@
       "currentPlayer": "X",
       "board": [
         [
-          "O",
+          null,
           "X",
           "X",
           "X",
           null
         ],
         [
-          null,
+          "X",
           "O",
           "X",
           "O",

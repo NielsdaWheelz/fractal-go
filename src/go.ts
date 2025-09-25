@@ -73,7 +73,7 @@ export const calculateWinner = (gameState) => {
     } else if ((xScore - oScore) < 0){
       return {...newGameState, winner: "o"}
     } else if ((xScore - oScore) === 0) {
-      return {...newGameState, winner: "tie"}
+      return {...newGameState, winner: "Draw"}
     }
   }
   return newGameState

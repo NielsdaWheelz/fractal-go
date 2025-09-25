@@ -29,7 +29,6 @@ const GameComponent = (props: { data: GameState, moveMutation, passMutation }) =
           <Board board={props.data.board} onCellClick={handleCellClick} />
         </div>
         <div className="">
-          <div className="">Turn: { props.data.currentPlayer }</div>
           <button className="" onClick={handlePass}>Pass</button>
         </div>
         {(props.data.pass["x"] && props.data.pass["o"] && props.data.winner) && (
