@@ -2,17 +2,17 @@
   "games": [
     {
       "id": 0,
-      "currentPlayer": "O",
+      "currentPlayer": "X",
       "board": [
         [
-          null,
+          "O",
           "X",
           "X",
           "X",
           null
         ],
         [
-          "X",
+          null,
           "O",
           "X",
           "O",

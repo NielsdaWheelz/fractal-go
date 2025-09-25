@@ -13,7 +13,7 @@ export default function App(props: { queryClient: any }) {
   const getGameQuery = useQuery({
     queryKey: ['game', selectedGame?.id],
     queryFn: () =>
-      getGame(selectedGame.id as number), enabled: !!selectedGame,
+      getGame(selectedGame?.id as number), enabled: !!selectedGame,
   })
 
   const getGamesQuery = useQuery({
@@ -48,7 +48,7 @@ export default function App(props: { queryClient: any }) {
     createGameMutation.mutate(boardSize)
   }
 
-  const handleOpenGame = (game: Game) => {
+  const handleOpenGame = (game: GameState) => {
     setSelectedGame(game)
   }
 
