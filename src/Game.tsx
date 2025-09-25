@@ -1,6 +1,7 @@
 import Board from "./Board.tsx";
+import type { GameState } from "./types.ts";
 
-const Game = (props: { data, moveMutation, passMutation, setFunc }) => {
+const GameComponent = (props: { data: GameState, moveMutation, passMutation }) => {
     
     if (!props.data) return null;
 
@@ -23,18 +24,19 @@ const Game = (props: { data, moveMutation, passMutation, setFunc }) => {
       console.log(props.data)
 
     return (
-      <div className="m-20 p-4 flex flex-col">
-        <div><button onClick={() => props.setFunc(null)}>Go Back</button></div>
-        <div className="flex flex-col items-center">
+      <div className="">
+        <div className="">
           <Board board={props.data.board} onCellClick={handleCellClick} />
         </div>
-        <div className="flex flex-row justify-between">
-          <div>Turn: { props.data.currentPlayer }</div>
-          <div><button onClick={handlePass}>Pass</button></div>
+        <div className="">
+          <div className="">Turn: { props.data.currentPlayer }</div>
+          <button className="" onClick={handlePass}>Pass</button>
         </div>
-        {(props.data.pass["x"] && props.data.pass["o"] && props.data.winner) && <div>{props.data.winner} Wins!</div>}
+        {(props.data.pass["x"] && props.data.pass["o"] && props.data.winner) && (
+          <div className="">{props.data.winner} Wins!</div>
+        )}
       </div>
     )
 }
 
-export default Game
+export default GameComponent

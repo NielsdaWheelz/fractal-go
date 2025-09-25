@@ -13,10 +13,13 @@ export type Group = Position[];
 export type Winner = Player | "Draw" | null;
 
 export type GameState = {
+  id: number
   currentPlayer: Player;
   board: Board;
-  consecutivePasses: number; // number of consecutive pass turns
-  resignedBy: Player | null; // the player who resigned, if any
+  pass: {
+    "x": boolean,
+    "o": boolean
+  };
   winner: Winner; // set when game is over
 };
 

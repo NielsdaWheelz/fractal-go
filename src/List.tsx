@@ -1,18 +1,30 @@
-const List = (props: {data, handleOpenGame, handleCreateGame}) => {
-    const games = props.data || []
-    const gameElements = games.map(game => (
-        <li key={game.id} onClick={ () => props.handleOpenGame(game) }>id: { game.id }, turn: { game.currentPlayer }, Winner: { game.winner || "undecided" }</li>
-    ))
-    
-    return (
-        <>
-            <ul>
-                { gameElements }
-            </ul>
-            <button onClick={props.handleCreateGame}>Create New Game</button>
-        </>
-  
-    )
+import type { GameState } from "./types.ts"
+
+const List = (props: { data: GameState[]; handleOpenGame: (game: GameState) => void }) => {
+  const games = props.data || []
+
+  return (
+    <div className="">
+      <ul className="">
+        {games.map((game: GameState) => (
+          <li key={game.id}>
+            <button onClick={() => props.handleOpenGame(game)} className="">
+              <div className="">
+                <div className="">
+                  <div className="">Game #{game.id}</div>
+                  <span className="">
+                    {game.winner ? `Winner: ${game.winner}` : `Turn: ${game.currentPlayer}`}
+                  </span>
+                </div>
+                <div className="">
+                </div>
+              </div>
+            </button>
+          </li>
+        ))}
+      </ul>
+    </div>
+  )
 }
 
 export default List

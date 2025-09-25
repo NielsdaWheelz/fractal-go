@@ -1,5 +1,15 @@
-const Board = ({ board, onCellClick }) => {
+import type { Board as BoardType } from "./types.ts";
+
+const Board = ({ board, onCellClick }: { board: BoardType; onCellClick: (row: number, col: number) => void }) => {
   const size = board.length;
+  const sizeToGridClass = {
+    5: "grid-cols-5 grid-rows-5",
+    9: "grid-cols-9 grid-rows-9",
+    13: "grid-cols-13 grid-rows-13",
+    19: "grid-cols-19 grid-rows-19",
+  };
+  const gridClass = sizeToGridClass[size];
+
   // each cell is an object with row and col
   const cells = Array.from({ length: size * size }, (_, i) => ({
     row: Math.floor(i / size),
@@ -7,23 +17,25 @@ const Board = ({ board, onCellClick }) => {
   }))
 
   return (
-    <div className="inline-grid grid-cols-5 grid-rows-5">
-      {/* render each cell using its row-col object contents */}
-      {cells.map(({ row, col }) => (
-        <button
-          key={`${row}-${col}`}
-          onClick={() => onCellClick(row, col)}
-          className={`
-            w-full aspect-square
-            flex items-center justify-center
-            ${row < size - 1 ? "border-b" : ""}
-            ${col < size - 1 ? "border-r" : ""}
-            border-black
-          `}
-        >
-          {board[row][col] /* render stone here later */}
-        </button>
-      ))}
+    <div className={`grid w-full aspect-square mx-auto ${gridClass}`}>
+      {cells.map(({ row, col }) => {
+        const isInteriorRow = row < size - 1;
+        const isInteriorCol = col < size - 1;
+        return (
+          <button
+            key={`${row}-${col}`}
+            onClick={() => onCellClick(row, col)}
+            className={`
+              flex items-center justify-center w-full aspect-square
+              border-0 border-black/70
+              ${isInteriorRow ? "border-b" : ""}
+              ${isInteriorCol ? "border-r" : ""}
+            `}
+          >
+            <span className="">{board[row][col]}</span>
+          </button>
+        );
+      })}
     </div>
   );
 };

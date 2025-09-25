@@ -5,8 +5,8 @@
       "currentPlayer": "X",
       "board": [
         [
-          null,
-          null,
+          "X",
+          "O",
           null,
           null,
           null

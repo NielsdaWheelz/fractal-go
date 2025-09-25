@@ -25,14 +25,19 @@ app.get("/games", (req, res) => {
 
 app.get("/game/:id", (req, res) => {
     game = games.find(game => game.id === Number(req.params.id))
+    if (!game) return res.status(404).json({ error: "Game not found" })
     res.json(game)
 })
 
 app.post("/games", (req, res) => {
+    const size = Number(req.body.size)
+
+    const board = Array.from({ length: size }, () => Array(size).fill(null))
+
     const newGame = {
         "id": generatedId(),
         "currentPlayer": "X",
-        "board": [[null,null,null,null,null],[null,null,null,null,null],[null,null,null,null,null],[null,null,null,null,null],[null,null,null,null,null]],
+        "board": board,
         "pass": {
           "x": false,
           "o": false
@@ -46,6 +51,7 @@ app.post("/games", (req, res) => {
 
 app.post("/move", (req, res) => {
     game = games.find(game => game.id === Number(req.body.id))
+    if (!game) return res.status(404).json({ error: "Game not found" })
     if (game.board[req.body.row][req.body.col] !== null || (game.pass["x"] && game.pass["o"])) {
         return res.status(400).json({ error: "Invalid move" })
     }
@@ -56,8 +62,8 @@ app.post("/move", (req, res) => {
 })
 
 app.post("/pass", (req, res) => {
-    console.log(req.body)
     game = games.find(game => game.id === Number(req.body.id))
+    if (!game) return res.status(404).json({ error: "Game not found" })
     const newGame = calculateWinner(game)
     games = games.map(game => game.id === newGame.id ? newGame : game)
     fs.writeFileSync("data.json", JSON.stringify({games: games}, null, 2))
