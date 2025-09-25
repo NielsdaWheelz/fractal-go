@@ -29,7 +29,7 @@ const GameComponent = (props: { data: GameState; moveMutation: MoveMutation; pas
     return (
       <div className="flex flex-col items-center justify-center w-full h-full gap-3">
         <div className="w-full h-full max-w-[min(95vw,95vh)] max-h-[min(95vw,95vh)] aspect-square">
-          <Board board={props.data.board} onCellClick={handleCellClick} />
+          <Board game={props.data} onCellClick={handleCellClick} />
         </div>
         <button className="bg-amber-300 hover:bg-amber-500 hover:border-amber-700 rounded-md px-4 py-1" onClick={handlePass}>Pass</button>
       </div>

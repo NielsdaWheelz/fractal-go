@@ -1,7 +1,8 @@
-import type { Board as BoardType } from "./types.ts";
+import type { GameState } from "./types.ts";
+import { isPlayablePosition } from "./gorules"
 
-const Board = ({ board, onCellClick }: { board: BoardType; onCellClick: (row: number, col: number) => void }) => {
-  const size = board.length;
+const Board = ({ game, onCellClick }: { game: GameState; onCellClick: (row: number, col: number) => void }) => {
+  const size = game.board.length;
   const sizeToGridClass: Record<number, string> = {
     5: "grid-cols-5 grid-rows-5",
     9: "grid-cols-9 grid-rows-9",
@@ -25,8 +26,8 @@ const Board = ({ board, onCellClick }: { board: BoardType; onCellClick: (row: nu
           <button
             key={`${row}-${col}`}
             onClick={() => onCellClick(row, col)}
-            className={`${ board[row][col] ? "" : "hover:bg-gray-200"} flex items-center justify-center w-full aspect-square border-0 border-black/70 ${isInteriorRow ? "border-b" : ""} ${isInteriorCol ? "border-r" : ""}`}>
-            <span className="">{board[row][col]}</span>
+            className={`${ isPlayablePosition(game, row, col) ? "hover:bg-gray-200" : "" } flex items-center justify-center w-full aspect-square border-0 border-black/70 ${isInteriorRow ? "border-b" : ""} ${isInteriorCol ? "border-r" : ""}`}>
+            <span className="">{game.board[row][col]}</span>
           </button>
         );
       })}
