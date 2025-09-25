@@ -10,7 +10,7 @@ export default function App(props: { queryClient: any }) {
   const [boardSize, setBoardSize] = useState<number>(5)
   const sizes = [5, 9, 13, 19]
 
-  const sizeSwitchStyle = (size: number) => `w-[20%] text-sm text-white border-gray-600 py-0.5 rounded-md m-0.5 ${boardSize === size ? "bg-gray-900 hover:bg-gray-700" : "bg-gray-400 hover:bg-gray-600" }`
+  const sizeSwitchStyle = (size: number) => `w-[20%] text-sm text-white border-gray-600 p-0.5 rounded-md m-0.5 ${boardSize === size ? "bg-gray-900 hover:bg-gray-700" : "bg-gray-400 hover:bg-gray-600" }`
 
   const getGameQuery = useQuery({
     queryKey: ['game', selectedGame?.id],
@@ -68,32 +68,29 @@ export default function App(props: { queryClient: any }) {
 
   return (
     <>
-    <header className="bg-gray-100 rounded-md p-6 m-2">
-      {selectedGame ? (
-        <div className="flex flex-row justify-between">
-          <button className="bg-blue-500 text-sm border-blue-700 text-white p-1 rounded-md hover:bg-blue-700" onClick={() => setSelectedGame(null)}>Go Back</button>
-          <div className="text-xl font-bold">{ gameData?.currentPlayer }'s Turn</div>
-          <div className="">Game #{gameData?.id}</div>
-        </div>      
-      ) : (
-        <div className="flex flex-row justify-between">
-          <div className="text-2xl font-bold align-middle justify-center">Get Go-ing</div>
-          <div className="flex flex-col">
-            <button className="bg-green-600 text-white hover:bg-green-800 rounded-md border-1 border-green-800 py-1 px-2" onClick={ handleCreateGame }>Create New Game</button>
-            <div className="flex flex-row justify-center">{sizes.map((size) => (
-              <button
-                key={size}
-                onClick={() => setBoardSize(size)}
-                className={ sizeSwitchStyle(size) }>
-                {size}
-              </button>
-            ))}</div>
+    <div className="max-h-screen flex flex-col">
+      <header className="bg-gray-100 rounded-md p-6 m-2 flex-none">
+        {selectedGame ? (
+          <div className="flex flex-row justify-between">
+            <button className="bg-blue-500 text-sm border-blue-700 text-white p-1 rounded-md hover:bg-blue-700" onClick={() => setSelectedGame(null)}>Go Back</button>
+            <div className="text-xl font-bold">{gameData?.winner ? gameData.winner === "Draw" ? `${gameData.winner}!` : `${gameData.winner} Won!` : `${gameData?.currentPlayer}'s turn`}</div>
+            <div className="">Game #{gameData?.id}</div>
+          </div>      
+        ) : (
+          <div className="flex flex-row justify-between">
+            <div className="text-2xl font-bold align-middle justify-center">Get Go-ing</div>
+            <div className="flex flex-col">
+              <button className="bg-green-600 text-white hover:bg-green-800 rounded-md border-1 border-green-800 py-1 px-2" onClick={ handleCreateGame }>Create New Game</button>
+              <div className="flex flex-row justify-center">
+                {sizes.map((size) => (
+                  <button key={size} onClick={() => setBoardSize(size)} className={ sizeSwitchStyle(size) }>{size}</button>
+                ))}
+              </div>
+            </div>
           </div>
-        </div>
-      )}
-    </header>
-    <main>
-      <div className="">
+        )}
+      </header>
+      <main className="flex-1 w-full h-full">
         {!selectedGame && (
           <>
             {listLoading && renderLoading('Loading...')}
@@ -115,8 +112,8 @@ export default function App(props: { queryClient: any }) {
             )}
           </>
         )}
-      </div>
-    </main>
+      </main>
+    </div>
     </>
   )
 }

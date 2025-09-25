@@ -1,7 +1,10 @@
 import Board from "./Board.tsx";
 import type { GameState } from "./types.ts";
 
-const GameComponent = (props: { data: GameState, moveMutation, passMutation }) => {
+type MoveMutation = { mutate: (vars: { id: number; row: number; col: number }) => void };
+type PassMutation = { mutate: (vars: { id: number }) => void };
+
+const GameComponent = (props: { data: GameState; moveMutation: MoveMutation; passMutation: PassMutation }) => {
     
     if (!props.data) return null;
 
@@ -24,16 +27,11 @@ const GameComponent = (props: { data: GameState, moveMutation, passMutation }) =
       console.log(props.data)
 
     return (
-      <div className="">
-        <div className="">
+      <div className="flex flex-col items-center justify-center w-full h-full gap-3">
+        <div className="w-full h-full max-w-[min(95vw,95vh)] max-h-[min(95vw,95vh)] aspect-square">
           <Board board={props.data.board} onCellClick={handleCellClick} />
         </div>
-        <div className="">
-          <button className="" onClick={handlePass}>Pass</button>
-        </div>
-        {(props.data.pass["x"] && props.data.pass["o"] && props.data.winner) && (
-          <div className="">{props.data.winner} Wins!</div>
-        )}
+        <button className="bg-amber-300 hover:bg-amber-500 hover:border-amber-700 rounded-md px-4 py-1" onClick={handlePass}>Pass</button>
       </div>
     )
 }

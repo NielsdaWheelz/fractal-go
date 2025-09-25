@@ -3,6 +3,10 @@ export const isValidPosition = (board, row, col) => {
          col >= 0 && col < board[0].length;
 }
 
+export const isPlayablePosition = (board, row, col) => {
+  
+}
+
 export const getGroup = (currentBoard, row, col) => {
   const targetColour = currentBoard[row][col]
   const group = []
