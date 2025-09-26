@@ -15,7 +15,7 @@ const CursorStone = (props: { enabled, colour, size }) => {
 
     return (
         <div className="pointer-events-none fixed z-50" style={{left: position.x - props.size / 2, top: position.y - props.size / 2, width: props.size, height: props.size}}>
-            <Stone colour={props.colour} />
+            <Stone colour={props.colour} cursor={true} />
         </div>
     )
 }

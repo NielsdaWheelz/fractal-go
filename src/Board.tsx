@@ -31,7 +31,7 @@ const Board = (props: { game: GameState }) => {
   };
 
   return (
-    <div className={`min-h-0 grid aspect-square p-2 self-center ${gridClass}`}>
+    <div className={`min-h-0 grid aspect-square p-2 self-center ${gridClass} bg-[url('https://images.pexels.com/photos/129728/pexels-photo-129728.jpeg')] bg-cover bg-center bg-no-repeat opacity-90`}>
       <CursorStone enabled={props.game.id} colour={props.game.currentPlayer === "x" ? "black" : "white"} size={size*2} />
       {cells.map(({ row, col }) => {
         const isInteriorRow = row < size - 1;
@@ -40,9 +40,9 @@ const Board = (props: { game: GameState }) => {
           <button
             key={`${row}-${col}`}
             onClick={() => handleCellClick(row, col)}
-            className={`${isPlayablePosition(props.game, row, col) && "hover:bg-gray-200"} aspect-square border-0 border-black/70 ${isInteriorRow ? "border-b" : ""} ${isInteriorCol ? "border-r" : ""}`}>
-            <span className="w-full h-full">{props.game.board[row][col] === "x" && <Stone colour="black" />}
-            {props.game.board[row][col] === "o" && <Stone colour="white" />}</span>
+            className={`${isPlayablePosition(props.game, row, col) && "hover:bg-black hover:opacity-50"} aspect-square border-1 border-black/70 ${isInteriorRow ? "border-b" : ""} ${isInteriorCol ? "border-r" : ""}`}>
+            <span className="w-full h-full">{props.game.board[row][col] === "x" && <Stone colour="black" cursor={false} />}
+            {props.game.board[row][col] === "o" && <Stone colour="white" cursor={false} />}</span>
           </button>
         );
       })}
