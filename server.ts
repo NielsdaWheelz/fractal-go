@@ -1,12 +1,10 @@
 import express from "express"
 import ViteExpress from "vite-express"
 import fs from "fs"
-import http from "http"
 import { Server } from "socket.io"
+import { makeMove, calculateWinner } from "./src/go.ts"
 
 const app = express()
-// const server = app.listen(3000, "0.0.0.0")
-// --- Socket.IO Setup ---
 const io = new Server({
     cors: {
         origin: "*", // Change this if you want stricter cross-origin rules
@@ -14,17 +12,58 @@ const io = new Server({
 })
 io.listen(4000);
 
-// Initialize games by reading from data.json at runtime, not via module import
+io.on("connection", (socket) => {
+    console.log("Socket.IO client connected:", socket.id)
+
+    socket.emit("init", games)
+
+    socket.on('game:join', (id) => socket.join('game:'+id))
+
+    socket.on('game:leave', (id) => socket.leave('game:'+id))
+
+    socket.on("games:created", ({ size }) => {
+        io.emit("games:updated", createGame(size).games)
+    })
+
+    socket.on("game:move", ({ id, row, col }) => {
+        const game = games.find(game => game.id === id)
+        if (!game) return
+
+        const updatedGame = makeMove(game, row, col)
+        games = games.map(game => game.id === id ? updatedGame : game)
+        fs.writeFileSync("data.json", JSON.stringify({ games }, null, 2))
+
+        io.to(`game:${id}`).emit("game:updated", updatedGame)
+
+        io.emit("games:updated", games)
+    })
+
+    socket.on("game:pass", ({ id }) => {
+        const game = games.find(game => game.id === id)
+        if (!game) return
+
+        const updatedGame = calculateWinner(game)
+        games = games.map(game => game.id === id ? updatedGame : game)
+        fs.writeFileSync("data.json", JSON.stringify({ games }, null, 2))
+
+        io.to(`game:${id}`).emit("game:updated", updatedGame)
+
+        io.emit("games:updated", games)
+    })
+
+    socket.on("disconnect", () => {
+        console.log("Socket.IO client disconnected:", socket.id)
+    })
+})
+
 let games: any[] = []
 try {
     const raw = fs.readFileSync("data.json", "utf-8")
     const parsed = JSON.parse(raw)
     games = Array.isArray(parsed?.games) ? parsed.games : []
 } catch (err) {
-    // If file is missing or invalid, start with empty games list
     games = []
 }
-let game
 
 const generatedId = () => {
     const maxId = games.length > 0
@@ -33,39 +72,13 @@ const generatedId = () => {
     return Number(maxId + 1)
 }
 
-import { makeMove, calculateWinner } from "./src/go.ts"
+const getGame = (id: number) => {
+    return games.find(game => game.id === Number(id))
+}
 
-
-
-io.on("connection", (socket) => {
-    console.log("Socket.IO client connected:", socket.id)
-
-    // Optionally send initial state
-    socket.emit("init", games)
-
-    socket.on("disconnect", () => {
-        console.log("Socket.IO client disconnected:", socket.id)
-    })
-})
-
-
-app.use(express.json())
-
-app.get("/games", (req, res) => {
-    res.json(games)
-})
-
-app.get("/game/:id", (req, res) => {
-    game = games.find(game => game.id === Number(req.params.id))
-    if (!game) return res.status(404).json({ error: "Game not found" })
-    res.json(game)
-})
-
-app.post("/games", (req, res) => {
-    const size = Number(req.body.size)
-
+const createGame = (size: number) => {
     const board = Array.from({ length: size }, () => Array(size).fill(null))
-
+    
     const newGame = {
         "id": generatedId(),
         "currentPlayer": "X",
@@ -78,11 +91,29 @@ app.post("/games", (req, res) => {
     }
     games = games.concat(newGame)
     fs.writeFileSync("data.json", JSON.stringify({games: games}, null, 2))
-    res.json(newGame)
+    return {newGame, games}
+}
+
+app.use(express.json())
+
+app.get("/games", (req, res) => {
+    res.json(games)
+})
+
+app.get("/game/:id", (req, res) => {
+    const game = getGame(Number(req.params.id))
+    if (!game) return res.status(404).json({ error: "Game not found" })
+    res.json(game)
+})
+
+app.post("/games", (req, res) => {
+    const result = createGame(Number(req.body.size))
+    io.emit('games:updated', result.games)
+    res.json(result.newGame)
 })
 
 app.post("/move", (req, res) => {
-    game = games.find(game => game.id === Number(req.body.id))
+    const game = getGame(Number(req.body.id))
     if (!game) return res.status(404).json({ error: "Game not found" })
     if (game.board[req.body.row][req.body.col] !== null || (game.pass["x"] && game.pass["o"])) {
         return res.status(400).json({ error: "Invalid move" })
@@ -90,15 +121,19 @@ app.post("/move", (req, res) => {
     const newGame = makeMove(game, req.body.row, req.body.col)
     games = games.map(game => game.id === newGame.id ? newGame : game)
     fs.writeFileSync("data.json", JSON.stringify({games: games}, null, 2))
+    io.to(`game:${newGame.id}`).emit('game:updated', newGame)
+    io.emit('games:updated', games)
     res.json(newGame)
 })
 
 app.post("/pass", (req, res) => {
-    game = games.find(game => game.id === Number(req.body.id))
+    const game = getGame(Number(req.body.id))
     if (!game) return res.status(404).json({ error: "Game not found" })
     const newGame = calculateWinner(game)
     games = games.map(game => game.id === newGame.id ? newGame : game)
     fs.writeFileSync("data.json", JSON.stringify({games: games}, null, 2))
+    io.to(`game:${newGame.id}`).emit('game:updated', newGame)
+    io.emit('games:updated', games)
     res.json(newGame)
 })
 
