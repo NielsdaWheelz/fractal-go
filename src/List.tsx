@@ -5,7 +5,7 @@ const List = (props: { data: GameState[]; handleOpenGame: (game: GameState) => v
 
   const gameElements = (
     games.map((game: GameState) => (
-      <li key={game.id} className="bg-gray-200 border-gray-400 py-1 px-2 rounded-md hover:bg-gray-400">
+      <li key={game.id} className="bg-gray-300/70 hover:bg-gray-400/80 rounded-md p-2 shadow-inner transition-colors">
         <button onClick={() => props.handleOpenGame(game)} className="w-full">
             <div className="flex flex-row justify-between">
               <div className="">Game #{game.id}</div>
