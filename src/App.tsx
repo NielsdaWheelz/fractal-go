@@ -1,65 +1,39 @@
 import { useState, useEffect } from "react"
-import { useQuery, useMutation } from "@tanstack/react-query"
-import { getGames, getGame, createGame, postMove, postPass } from "./api.ts"
+import { useGetGameQuery, useGetGamesQuery } from "./queries"
+import { useCreateGameMutation } from "./mutations"
+import { useQueryClient } from "@tanstack/react-query"
 import List from "./List"
 import Game from "./Game"
 import type { GameState } from "./types.ts"
 import { io } from "socket.io-client"
 
+// set up socket connection, turns on
 const socket = io('http://localhost:4000/');
-
 socket.on("connect", () => {
   console.log('connected: ' + socket.id);
 })
 
-export default function App(props: { queryClient: any }) {
+export default function App() {
+  const queryClient = useQueryClient()
   const [selectedGame, setSelectedGame] = useState<GameState | null>(null)
   const [boardSize, setBoardSize] = useState<number>(5)
   const sizes = [5, 9, 13, 19]
 
   const sizeSwitchStyle = (size: number) => `w-[20%] text-sm text-white border-gray-600 p-0.5 rounded-md m-0.5 ${boardSize === size ? "bg-gray-900 hover:bg-gray-700" : "bg-gray-400 hover:bg-gray-600"}`
 
-  const getGameQuery = useQuery({
-    queryKey: ['game', selectedGame?.id],
-    queryFn: () =>
-      getGame(selectedGame?.id as number), enabled: !!selectedGame,
-  })
+  const createGameMutation = useCreateGameMutation()
+  const gamesQuery = useGetGamesQuery()
+  const gameId = selectedGame?.id
+  const gameQuery = useGetGameQuery(gameId)
 
-  const getGamesQuery = useQuery({
-    queryKey: ['games'],
-    queryFn: () =>
-      getGames(),
-  })
-
-  const moveMutation = useMutation({
-    mutationFn: ({ id, row, col }: { id: number; row: number; col: number }) => postMove(id, row, col),
-    onSuccess: () => {
-      props.queryClient.invalidateQueries({ queryKey: ['game', selectedGame?.id] })
-    }
-  })
-
-  const passMutation = useMutation({
-    mutationFn: ({ id }: { id: number }) => postPass(id),
-    onSuccess: () => {
-      props.queryClient.invalidateQueries({ queryKey: ['game', selectedGame?.id] })
-    }
-  })
-
-  const createGameMutation = useMutation({
-    mutationFn: (size: number) => createGame(size),
-    onSuccess: (data) => {
-      props.queryClient.invalidateQueries({ queryKey: ['games'] })
-      setSelectedGame(data)
-    }
-  })
-
+  // game updates, detects when queryClient changes
   useEffect(() => {
-    const handleGamesUpdated = (games) => {
-      props.queryClient.setQueryData(['games'], games)
+    const handleGamesUpdated = (games: GameState[]) => {
+      queryClient.setQueryData(['games'], games)
     }
 
-    const handleGameUpdated = (game) => {
-      props.queryClient.setQueryData(['game', game.id], game)
+    const handleGameUpdated = (game: GameState) => {
+      queryClient.setQueryData(['game', game.id], game)
     }
 
     socket.on('games:updated', handleGamesUpdated)
@@ -69,19 +43,23 @@ export default function App(props: { queryClient: any }) {
       socket.off('games:updated', handleGamesUpdated)
       socket.off('game:updated', handleGameUpdated)
     }
-  }, [props.queryClient])
+  }, [queryClient])
 
+  // detects user connection and which game user is joined to. changes when the active game (state) changes
   useEffect(() => {
     const id = selectedGame?.id
+
     if (id) {
       socket.emit('game:join', id)
     }
+
     const handleConnect = () => {
       if (selectedGame?.id) {
-        socket.emit('game:join', selectedGame.id)
+        socket.emit('game:join', id)
       }
     }
     socket.on('connect', handleConnect)
+
     return () => {
       if (id) {
         socket.emit('game:leave', id)
@@ -91,7 +69,11 @@ export default function App(props: { queryClient: any }) {
   }, [selectedGame?.id])
 
   const handleCreateGame = () => {
-    createGameMutation.mutate(boardSize)
+    createGameMutation.mutate(boardSize, {
+      onSuccess: (data) => {
+        setSelectedGame(data)
+      }
+    })
   }
 
   const handleOpenGame = (game: GameState) => {
@@ -102,13 +84,13 @@ export default function App(props: { queryClient: any }) {
     <div className=""><div className="">{text}</div></div>
   )
 
-  const listLoading = getGamesQuery.isLoading
-  const listError = getGamesQuery.error
-  const listData = getGamesQuery.data
+  const listLoading = gamesQuery.isLoading
+  const listError = gamesQuery.error as any
+  const listData = gamesQuery.data
 
-  const gameLoading = selectedGame && getGameQuery.isLoading
-  const gameError = selectedGame && (getGameQuery.error)
-  const gameData = selectedGame && getGameQuery.data
+  const gameLoading = gameQuery.isLoading
+  const gameError = gameQuery.error as any
+  const gameData = gameQuery.data
 
   return (
     <>
@@ -152,7 +134,7 @@ export default function App(props: { queryClient: any }) {
               {gameError && renderLoading(`Error... ${gameError.message}`)}
               {!gameLoading && !gameError && !gameData && renderLoading('Game not found')}
               {!gameLoading && !gameError && gameData && (
-                <Game data={gameData} passMutation={passMutation} moveMutation={moveMutation} />
+                <Game data={gameData} />
               )}
             </>
           )}
