@@ -1,7 +1,8 @@
 import type { GameState } from "./types.ts";
 import { isPlayablePosition } from "./gorules"
+import { useMoveMutation } from "./mutations"
 
-const Board = ({ game, onCellClick }: { game: GameState; onCellClick: (row: number, col: number) => void }) => {
+const Board = ({ game }: { game: GameState }) => {
   const size = game.board.length;
   const sizeToGridClass: Record<number, string> = {
     5: "grid-cols-5 grid-rows-5",
@@ -17,16 +18,26 @@ const Board = ({ game, onCellClick }: { game: GameState; onCellClick: (row: numb
     col: i % size
   }))
 
+  const moveMutation = useMoveMutation()
+
+  const handleCellClick = (row: number, col: number) => {
+    moveMutation.mutate({
+      id: game.id,
+      row: row,
+      col: col
+    })
+  };
+
   return (
-    <div className={`flex-1 p-2 grid aspect-square h-full w-full ${gridClass}`}>
+    <div className={`flex-1 grid aspect-square p-2 ${gridClass}`}>
       {cells.map(({ row, col }) => {
         const isInteriorRow = row < size - 1;
         const isInteriorCol = col < size - 1;
         return (
           <button
             key={`${row}-${col}`}
-            onClick={() => onCellClick(row, col)}
-            className={`${ isPlayablePosition(game, row, col) ? "hover:bg-gray-200" : "" } flex items-center justify-center w-full aspect-square border-0 border-black/70 ${isInteriorRow ? "border-b" : ""} ${isInteriorCol ? "border-r" : ""}`}>
+            onClick={() => handleCellClick(row, col)}
+            className={`${isPlayablePosition(game, row, col) && "hover:bg-gray-200"} aspect-square border-0 border-black/70 ${isInteriorRow ? "border-b" : ""} ${isInteriorCol ? "border-r" : ""}`}>
             <span className="">{game.board[row][col]}</span>
           </button>
         );

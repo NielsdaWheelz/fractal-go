@@ -1,9 +1,9 @@
 import { useState, useEffect } from "react"
 import { useGetGameQuery, useGetGamesQuery } from "./queries"
-import { useCreateGameMutation } from "./mutations"
+import { useCreateGameMutation, usePassMutation, useMoveMutation } from "./mutations"
 import { useQueryClient } from "@tanstack/react-query"
 import List from "./List"
-import Game from "./Game"
+import Board from "./Board"
 import type { GameState } from "./types.ts"
 import { io } from "socket.io-client"
 
@@ -22,6 +22,7 @@ export default function App() {
   const sizeSwitchStyle = (size: number) => `w-[20%] text-sm text-white border-gray-600 p-0.5 rounded-md m-0.5 ${boardSize === size ? "bg-gray-900 hover:bg-gray-700" : "bg-gray-400 hover:bg-gray-600"}`
 
   const createGameMutation = useCreateGameMutation()
+  const passMutation = usePassMutation()
   const gamesQuery = useGetGamesQuery()
   const gameId = selectedGame?.id
   const gameQuery = useGetGameQuery(gameId)
@@ -80,8 +81,15 @@ export default function App() {
     setSelectedGame(game)
   }
 
+  const handlePass = () => {
+    passMutation.mutate({
+      id: gameData.id
+    })
+  }
+
+
   const renderLoading = (text: string) => (
-    <div className=""><div className="">{text}</div></div>
+    <div className="">{text}</div>
   )
 
   const listLoading = gamesQuery.isLoading
@@ -94,7 +102,7 @@ export default function App() {
 
   return (
     <>
-      <div className="max-h-screen flex flex-col">
+      <div className="flex flex-col">
         <header className="bg-gray-100 rounded-md p-6 m-2 flex-none">
           {selectedGame ? (
             <div className="flex flex-row justify-between">
@@ -116,7 +124,7 @@ export default function App() {
             </div>
           )}
         </header>
-        <main className="flex-1 w-full h-full">
+        <main className="flex-1">
           {!selectedGame && (
             <>
               {listLoading && renderLoading('Loading...')}
@@ -134,11 +142,14 @@ export default function App() {
               {gameError && renderLoading(`Error... ${gameError.message}`)}
               {!gameLoading && !gameError && !gameData && renderLoading('Game not found')}
               {!gameLoading && !gameError && gameData && (
-                <Game data={gameData} />
+                <Board game={gameData} />
               )}
             </>
           )}
         </main>
+        <footer className="flex-none self-center">
+          {selectedGame && <button className="bg-amber-300 hover:bg-amber-500 hover:border-amber-700 rounded-md px-4 py-1" onClick={handlePass}>Pass</button>}
+        </footer>
       </div>
     </>
   )
