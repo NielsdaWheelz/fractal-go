@@ -7,7 +7,7 @@ export const isPlayablePosition = (game, row, col) => {
   const player = game.currentPlayer
   const oldBoard = game.board
 
-  if (oldBoard[row][col] === "X" || oldBoard[row][col] === "O") return false
+  if (oldBoard[row][col] === "x" || oldBoard[row][col] === "o") return false
 
   let newBoard = oldBoard.map((rowArray, rowIndex) =>
     rowArray.map((cell, colIndex) =>

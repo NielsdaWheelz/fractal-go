@@ -1,24 +1,25 @@
 import { getGroup, hasLiberties, removePieces, getEnemyNeighbours } from "./gorules.ts"
+import type { GameState } from "./types"
 
-const size = 5;
-
-const initialBoard = Array.from(
-  { length: size },
-  () => 
-    Array.from(
-      { length: size },
-      () => null))
+// const initialBoard = (size) => {
+//   Array.from(
+//     { length: size },
+//     () => 
+//       Array.from(
+//         { length: size },
+//         () => null))
+// }
 
 // export const initialGameState = (id) => {
 //   id: id
-//   currentPlayer: "X",
-//   board: initialBoard,
-//   pass: { x: false, o: false },
+//   currentPlayer: "x",
+//   board: initialBoard(size),
+//   x_pass: false,
+//   o_pass: false,
 //   winner: null
 // }
 
-export const makeMove = (gameState, row, col) => {
-  const gameId = gameState.id
+export const makeMove = (gameState: GameState, row: number, col: number) => {
   const oldPlayer = gameState.currentPlayer
   const oldBoard = gameState.board
 
@@ -42,7 +43,7 @@ export const makeMove = (gameState, row, col) => {
 
   const newGameState = {
     ...gameState,
-    currentPlayer: oldPlayer === "X" ? "O" : "X",
+    currentPlayer: oldPlayer === "x" ? "o" : "x",
     board: newBoard,
     pass: { x: false, o: false },
     winner: null
@@ -53,27 +54,33 @@ export const makeMove = (gameState, row, col) => {
 
 export const calculateWinner = (gameState) => {
   const oldPlayer = gameState.currentPlayer
-
-  // set the pass of the current player to true
-  let newGameState = {...gameState,
-    currentPlayer: oldPlayer === "X" ? "O" : "X",
-    pass: {...gameState.pass, [gameState.currentPlayer.toLowerCase()]: true}}
+  let newGameState
+  if (oldPlayer === "x") {
+    newGameState = {
+      ...gameState,
+      currentPlayer: oldPlayer === "x" ? "o" : "x",
+      x_pass: true}
+  } else if (oldPlayer === "o") {
+    newGameState = {
+      ...gameState,
+      currentPlayer: oldPlayer === "x" ? "o" : "x",
+      o_pass: true}
+  }
   
-  if (newGameState.pass["x"] && newGameState.pass["o"]) {
+  if (newGameState.x_pass && newGameState.o_pass) {
     let xScore = 0
     let oScore = 0
     for (let i = 0; i < newGameState.board.length; i++) {
       for (let j = 0; j < newGameState.board[i].length; j++) {
-        if (newGameState.board[i][j] === "X") {xScore++} else if (newGameState.board[i][j] === "O") {oScore++}
+        if (newGameState.board[i][j] === "x") {xScore++} else if (newGameState.board[i][j] === "o") {oScore++}
       }
     }
     if ((xScore - oScore) > 0) {
       return {...newGameState, winner: "x"}
-      // gameState where winner: "x"
     } else if ((xScore - oScore) < 0){
       return {...newGameState, winner: "o"}
     } else if ((xScore - oScore) === 0) {
-      return {...newGameState, winner: "Draw"}
+      return {...newGameState, winner: "draw"}
     }
   }
   return newGameState
