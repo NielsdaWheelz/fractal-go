@@ -187,8 +187,8 @@ export default function App() {
           </>
         )}
         <footer className="flex-none self-center">
-          {/* {selectedGame && <button onClick={handlePass}><Trash />Pass</button>} */}
-          {selectedGame && <button className="bg-amber-300 hover:bg-amber-500 hover:border-amber-700 rounded-md px-4 py-1 mb-2" onClick={handlePass}>Pass</button>}
+          {selectedGame && <Trash onClick={handlePass}/>}
+          {/* {selectedGame && <button className="bg-amber-300 hover:bg-amber-500 hover:border-amber-700 rounded-md px-4 py-1 mb-2" onClick={handlePass}>Pass</button>} */}
         </footer>
       </div>
     </>
