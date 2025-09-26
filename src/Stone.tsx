@@ -1,10 +1,10 @@
-const Stone = (props: { colour }) => {
+const Stone = (props: { colour, cursor }) => {
 	const gradientId = `${props.colour}-gradient`
 
 	return (
-		<svg viewBox="0 0 100 100" className="w-full h-full p-1">
+		<svg viewBox="0 0 100 100" className="w-full h-full translate-y-[-1px] scale-[1.02]">
 			<defs>
-				<radialGradient id={gradientId} cx="30%" cy="30%" r="70%">
+				<radialGradient id={gradientId} cx="10%" cy="10%" r="90%">
 					{props.colour === "black" ? (
 						<>
 							<stop offset="0%" stopColor="#555" />
@@ -19,7 +19,7 @@ const Stone = (props: { colour }) => {
 				</radialGradient>
 
 				<filter id="stone-shadow" x="-20%" y="-20%" width="140%" height="140%">
-					<feDropShadow dx="2" dy="2" stdDeviation="2" floodOpacity="0.4" />
+					<feDropShadow dx="2" dy="2" stdDeviation="4" floodOpacity="0.4" />
 				</filter>
 			</defs>
 
