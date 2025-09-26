@@ -102,7 +102,7 @@ export default function App() {
 
   return (
     <>
-      <div className="flex flex-col">
+      <div className="flex flex-col h-dvh">
         <header className="bg-gray-100 rounded-md p-6 m-2 flex-none">
           {selectedGame ? (
             <div className="flex flex-row justify-between">
@@ -124,31 +124,29 @@ export default function App() {
             </div>
           )}
         </header>
-        <main className="flex-1">
-          {!selectedGame && (
-            <>
-              {listLoading && renderLoading('Loading...')}
-              {listError && renderLoading(`Error... ${listError.message}`)}
-              {!listLoading && !listError && !listData && renderLoading('No games found')}
-              {!listLoading && !listError && listData && (
-                <List data={listData} handleOpenGame={handleOpenGame} />
-              )}
-            </>
-          )}
+        {!selectedGame && (
+          <>
+            {listLoading && renderLoading('Loading...')}
+            {listError && renderLoading(`Error... ${listError.message}`)}
+            {!listLoading && !listError && !listData && renderLoading('No games found')}
+            {!listLoading && !listError && listData && (
+              <List data={listData} handleOpenGame={handleOpenGame} />
+            )}
+          </>
+        )}
 
-          {selectedGame && (
-            <>
-              {gameLoading && renderLoading('Loading...')}
-              {gameError && renderLoading(`Error... ${gameError.message}`)}
-              {!gameLoading && !gameError && !gameData && renderLoading('Game not found')}
-              {!gameLoading && !gameError && gameData && (
-                <Board game={gameData} />
-              )}
-            </>
-          )}
-        </main>
+        {selectedGame && (
+          <>
+            {gameLoading && renderLoading('Loading...')}
+            {gameError && renderLoading(`Error... ${gameError.message}`)}
+            {!gameLoading && !gameError && !gameData && renderLoading('Game not found')}
+            {!gameLoading && !gameError && gameData && (
+              <Board game={gameData} />
+            )}
+          </>
+        )}
         <footer className="flex-none self-center">
-          {selectedGame && <button className="bg-amber-300 hover:bg-amber-500 hover:border-amber-700 rounded-md px-4 py-1" onClick={handlePass}>Pass</button>}
+          {selectedGame && <button className="bg-amber-300 hover:bg-amber-500 hover:border-amber-700 rounded-md px-4 py-1 mb-2" onClick={handlePass}>Pass</button>}
         </footer>
       </div>
     </>

@@ -29,7 +29,7 @@ const Board = ({ game }: { game: GameState }) => {
   };
 
   return (
-    <div className={`flex-1 grid aspect-square p-2 ${gridClass}`}>
+    <div className={`min-h-0 grid aspect-square p-2 self-center ${gridClass}`}>
       {cells.map(({ row, col }) => {
         const isInteriorRow = row < size - 1;
         const isInteriorCol = col < size - 1;
