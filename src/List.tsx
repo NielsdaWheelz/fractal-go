@@ -10,7 +10,7 @@ const List = (props: { data: GameState[]; handleOpenGame: (game: GameState) => v
             <div className="flex flex-row justify-between">
               <div className="">Game #{game.id}</div>
               <div className="">
-                {game.winner ? game.winner === "Draw" ? `${game.winner}!` : `${game.winner} Won!` : `${game.currentPlayer}'s turn`}
+                {game.winner ? game.winner === "draw" ? `${game.winner}!` : `${game.winner} Won!` : `${game.currentPlayer}'s turn`}
               </div>
             </div>
         </button>
