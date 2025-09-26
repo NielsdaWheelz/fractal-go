@@ -3,6 +3,7 @@ import { isPlayablePosition } from "./gorules"
 import { useMoveMutation } from "./mutations"
 import Stone from "./Stone"
 import CursorStone from "./CursorStone"
+import click from "./assets/piece.mp3"
 
 const Board = (props: { game: GameState }) => {
   const size = props.game.board.length;
@@ -22,6 +23,8 @@ const Board = (props: { game: GameState }) => {
 
   const moveMutation = useMoveMutation()
 
+  const audio = new Audio(click)
+
   const handleCellClick = (row: number, col: number) => {
     if (!isPlayablePosition(props.game, row, col)) return
     moveMutation.mutate({
@@ -29,10 +32,12 @@ const Board = (props: { game: GameState }) => {
       row: row,
       col: col
     })
+    audio.currentTime = 0
+    audio.play()
   };
 
   return (
-    <div className={`min-h-0 grid aspect-square p-2 self-center ${gridClass} bg-[url('https://images.pexels.com/photos/129728/pexels-photo-129728.jpeg')] bg-cover bg-center bg-no-repeat opacity-90`}>
+    <div className={`min-h-0 min-w-screen grid aspect-square p-2 self-center ${gridClass} bg-[url('https://images.pexels.com/photos/129728/pexels-photo-129728.jpeg')] bg-cover bg-center bg-no-repeat opacity-90`}>
       <CursorStone enabled={props.game.id} colour={props.game.currentPlayer === "x" ? "black" : "white"} size={size*2} />
       {cells.map(({ row, col }) => {
         const isInteriorRow = row < size - 1;
