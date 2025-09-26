@@ -1,4 +1,4 @@
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { useQuery, useMutation } from "@tanstack/react-query"
 import { getGames, getGame, createGame, postMove, postPass } from "./api.ts"
 import List from "./List"
@@ -52,6 +52,43 @@ export default function App(props: { queryClient: any }) {
       setSelectedGame(data)
     }
   })
+
+  useEffect(() => {
+    const handleGamesUpdated = (games) => {
+      props.queryClient.setQueryData(['games'], games)
+    }
+
+    const handleGameUpdated = (game) => {
+      props.queryClient.setQueryData(['game', game.id], game)
+    }
+
+    socket.on('games:updated', handleGamesUpdated)
+    socket.on('game:updated', handleGameUpdated)
+
+    return () => {
+      socket.off('games:updated', handleGamesUpdated)
+      socket.off('game:updated', handleGameUpdated)
+    }
+  }, [props.queryClient])
+
+  useEffect(() => {
+    const id = selectedGame?.id
+    if (id) {
+      socket.emit('game:join', id)
+    }
+    const handleConnect = () => {
+      if (selectedGame?.id) {
+        socket.emit('game:join', selectedGame.id)
+      }
+    }
+    socket.on('connect', handleConnect)
+    return () => {
+      if (id) {
+        socket.emit('game:leave', id)
+        socket.off('connect', handleConnect)
+      }
+    }
+  }, [selectedGame?.id])
 
   const handleCreateGame = () => {
     createGameMutation.mutate(boardSize)
