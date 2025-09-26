@@ -5,6 +5,7 @@ import { useQueryClient } from "@tanstack/react-query"
 import List from "./List"
 import Board from "./Board"
 import Stone from "./Stone"
+import Trash from "./Trash"
 import type { GameState } from "./types.ts"
 import { io } from "socket.io-client"
 
@@ -88,7 +89,6 @@ export default function App() {
     })
   }
 
-
   const renderLoading = (text: string) => (
     <div className="">{text}</div>
   )
@@ -120,12 +120,12 @@ export default function App() {
                       <>
                         {gameData.winner === "x" && (
                           <>
-                            <Stone colour="black" /> <span>won!</span>
+                            <Stone colour="black" cursor={false} /> <span>won!</span>
                           </>
                         )}
                         {gameData.winner === "o" && (
                           <>
-                            <Stone colour="white" /> <span>won!</span>
+                            <Stone colour="white" cursor={false} /> <span>won!</span>
                           </>
                         )}
                         {gameData.winner === "draw" && (
@@ -136,12 +136,12 @@ export default function App() {
                       <>
                         {gameData.currentPlayer === "x" && (
                           <>
-                            <span className="text-4xl">G</span><Stone colour="black" />
+                            <span className="text-4xl">G</span><Stone colour="black" cursor={false} />
                           </>
                         )}
                         {gameData.currentPlayer === "o" && (
                           <>
-                            <span className="text-4xl">G</span><Stone colour="white" />
+                            <span className="text-4xl">G</span><Stone colour="white" cursor={false} />
                           </>
                         )}
                       </>
@@ -187,6 +187,7 @@ export default function App() {
           </>
         )}
         <footer className="flex-none self-center">
+          {/* {selectedGame && <button onClick={handlePass}><Trash />Pass</button>} */}
           {selectedGame && <button className="bg-amber-300 hover:bg-amber-500 hover:border-amber-700 rounded-md px-4 py-1 mb-2" onClick={handlePass}>Pass</button>}
         </footer>
       </div>
