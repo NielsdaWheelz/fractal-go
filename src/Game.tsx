@@ -1,16 +1,15 @@
 import Board from "./Board.tsx";
 import type { GameState } from "./types.ts";
+import { useMoveMutation, usePassMutation } from "./mutations"
 
-type MoveMutation = { mutate: (vars: { id: number; row: number; col: number }) => void };
-type PassMutation = { mutate: (vars: { id: number }) => void };
-
-const GameComponent = (props: { data: GameState; moveMutation: MoveMutation; passMutation: PassMutation }) => {
+const GameComponent = (props: { data: GameState }) => {
+    const moveMutation = useMoveMutation()
+    const passMutation = usePassMutation()
     
     if (!props.data) return null;
 
     const handleCellClick = (row: number, col: number) => {
-        if (!props.data) return;
-        props.moveMutation.mutate({
+        moveMutation.mutate({
           id: props.data.id,
           row: row,
           col: col
@@ -18,8 +17,7 @@ const GameComponent = (props: { data: GameState; moveMutation: MoveMutation; pas
       };
       
       const handlePass = () => {
-        if (!props.data) return;
-        props.passMutation.mutate({
+        passMutation.mutate({
           id: props.data.id
         })
       }
