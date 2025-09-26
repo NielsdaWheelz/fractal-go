@@ -1,6 +1,7 @@
 import type { GameState } from "./types.ts";
 import { isPlayablePosition } from "./gorules"
 import { useMoveMutation } from "./mutations"
+import Stone from "./Stone"
 
 const Board = ({ game }: { game: GameState }) => {
   const size = game.board.length;
@@ -38,7 +39,8 @@ const Board = ({ game }: { game: GameState }) => {
             key={`${row}-${col}`}
             onClick={() => handleCellClick(row, col)}
             className={`${isPlayablePosition(game, row, col) && "hover:bg-gray-200"} aspect-square border-0 border-black/70 ${isInteriorRow ? "border-b" : ""} ${isInteriorCol ? "border-r" : ""}`}>
-            <span className="">{game.board[row][col]}</span>
+            <span className="w-full h-full">{game.board[row][col] === "x" && <Stone colour="black" />}
+            {game.board[row][col] === "o" && <Stone colour="white" />}</span>
           </button>
         );
       })}

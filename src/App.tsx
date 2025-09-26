@@ -1,9 +1,10 @@
 import { useState, useEffect } from "react"
 import { useGetGameQuery, useGetGamesQuery } from "./queries"
-import { useCreateGameMutation, usePassMutation, useMoveMutation } from "./mutations"
+import { useCreateGameMutation, usePassMutation } from "./mutations"
 import { useQueryClient } from "@tanstack/react-query"
 import List from "./List"
 import Board from "./Board"
+import Stone from "./Stone"
 import type { GameState } from "./types.ts"
 import { io } from "socket.io-client"
 
@@ -106,8 +107,48 @@ export default function App() {
         <header className="bg-gray-100 rounded-md p-6 m-2 flex-none">
           {selectedGame ? (
             <div className="flex flex-row justify-between">
-              <button className="bg-blue-500 text-sm border-blue-700 text-white p-1 rounded-md hover:bg-blue-700" onClick={() => setSelectedGame(null)}>Go Back</button>
-              <div className="text-xl font-bold">{gameData?.winner ? gameData.winner === "Draw" ? `${gameData.winner}!` : `${gameData.winner} Won!` : `${gameData?.currentPlayer}'s turn`}</div>
+              <button
+                className="bg-blue-500 text-sm border-blue-700 text-white p-1 rounded-md hover:bg-blue-700"
+                onClick={() => setSelectedGame(null)}
+              >
+                Go Back
+              </button>
+              <div className="text-xl font-bold h-10 flex items-center gap-2">
+                {gameData ? (
+                  <>
+                    {gameData.winner ? (
+                      <>
+                        {gameData.winner === "x" && (
+                          <>
+                            <Stone colour="black" /> <span>won!</span>
+                          </>
+                        )}
+                        {gameData.winner === "o" && (
+                          <>
+                            <Stone colour="white" /> <span>won!</span>
+                          </>
+                        )}
+                        {gameData.winner === "draw" && (
+                          <span>nobody wins</span>
+                        )}
+                      </>
+                    ) : (
+                      <>
+                        {gameData.currentPlayer === "x" && (
+                          <>
+                            <span className="text-4xl">G</span><Stone colour="black" />
+                          </>
+                        )}
+                        {gameData.currentPlayer === "o" && (
+                          <>
+                            <span className="text-4xl">G</span><Stone colour="white" />
+                          </>
+                        )}
+                      </>
+                    )}
+                  </>
+                ) : null}
+              </div>
               <div className="">Game #{gameData?.id}</div>
             </div>
           ) : (
