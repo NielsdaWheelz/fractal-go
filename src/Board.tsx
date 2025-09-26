@@ -23,6 +23,7 @@ const Board = (props: { game: GameState }) => {
   const moveMutation = useMoveMutation()
 
   const handleCellClick = (row: number, col: number) => {
+    if (!isPlayablePosition(props.game, row, col)) return
     moveMutation.mutate({
       id: props.game.id,
       row: row,
