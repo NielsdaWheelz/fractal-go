@@ -120,12 +120,12 @@ export default function App() {
                       <>
                         {gameData.winner === "x" && (
                           <>
-                            <div className="animate-bounce z-50 w-full h-full text-5xl"><Stone game={gameData} colour="black" cursor={false} /> <span>won!</span></div>
+                            <div className="animate-bounce z-50 w-full h-full text-5xl"><Stone game={gameData} colour="black" cursor={false} /> <span>wins!</span></div>
                           </>
                         )}
                         {gameData.winner === "o" && (
                           <>
-                            <div className="animate-bounce z-50 w-full h-full text-5xl"></div><Stone game={gameData} colour="white" cursor={false} /> <span>won!</span><div/>
+                            <div className="animate-bounce z-50 w-full h-full text-5xl"></div><Stone game={gameData} colour="white" cursor={false} /> <span>wins!</span><div/>
                           </>
                         )}
                         {gameData.winner === "draw" && (
