@@ -45,26 +45,27 @@ export const makeMove = (gameState: GameState, row: number, col: number) => {
     ...gameState,
     currentPlayer: oldPlayer === "x" ? "o" : "x",
     board: newBoard,
-    pass: { x: false, o: false },
+    x_pass: false,
+    o_pass: false,
     winner: null
   }
 
   return newGameState
 }
 
-export const calculateWinner = (gameState) => {
+export const calculateWinner = (gameState: GameState) => {
   const oldPlayer = gameState.currentPlayer
-  let newGameState
+  const nextPlayer = oldPlayer === "x" ? "o" : "x"
+  let newGameState: GameState = {
+    ...gameState,
+    currentPlayer: nextPlayer,
+    winner: null
+  }
+
   if (oldPlayer === "x") {
-    newGameState = {
-      ...gameState,
-      currentPlayer: oldPlayer === "x" ? "o" : "x",
-      x_pass: true}
-  } else if (oldPlayer === "o") {
-    newGameState = {
-      ...gameState,
-      currentPlayer: oldPlayer === "x" ? "o" : "x",
-      o_pass: true}
+    newGameState = { ...newGameState, x_pass: true }
+  } else {
+    newGameState = { ...newGameState, o_pass: true }
   }
   
   if (newGameState.x_pass && newGameState.o_pass) {
@@ -79,9 +80,25 @@ export const calculateWinner = (gameState) => {
       return {...newGameState, winner: "x"}
     } else if ((xScore - oScore) < 0){
       return {...newGameState, winner: "o"}
-    } else if ((xScore - oScore) === 0) {
+    } else {
       return {...newGameState, winner: "draw"}
     }
   }
   return newGameState
+}
+
+export const calculateScores = (gameState: GameState) => {
+  const board = gameState.board
+  let xScore = 0
+  let oScore = 0
+  for (let i = 0; i < board.length; i++) {
+    for (let j = 0; j < board[i].length; j++) {
+      if (board[i][j] === "x") xScore++
+      else if (board[i][j] === "o") oScore++
+    }
+  }
+  const diff = Math.abs(xScore - oScore)
+  const leader = xScore === oScore ? "draw" : (xScore > oScore ? "x" : "o")
+
+  return { xScore, oScore, leader, diff }
 }

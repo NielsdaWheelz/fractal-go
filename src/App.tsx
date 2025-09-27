@@ -48,7 +48,8 @@ export default function App() {
     }
   }, [queryClient])
 
-  // detects user connection and which game user is joined to. changes when the active game (state) changes
+  // Detects connection and keeps the client joined to the current game's room.
+  // Ensures 'connect' listener is always cleaned up to avoid leaks and stale closures.
   useEffect(() => {
     const id = selectedGame?.id
 
@@ -57,7 +58,7 @@ export default function App() {
     }
 
     const handleConnect = () => {
-      if (selectedGame?.id) {
+      if (id) {
         socket.emit('game:join', id)
       }
     }
@@ -66,8 +67,8 @@ export default function App() {
     return () => {
       if (id) {
         socket.emit('game:leave', id)
-        socket.off('connect', handleConnect)
       }
+      socket.off('connect', handleConnect)
     }
   }, [selectedGame?.id])
 
@@ -103,10 +104,10 @@ export default function App() {
 
   return (
     <>
-      <div className="flex flex-col h-dvh bg-[url('https://images.pexels.com/photos/8892/pexels-photo.jpg')] bg-cover bg-center bg-no-repeat opacity-90">
-        <header className="bg-gray-100 rounded-md p-6 m-2 flex-none">
+      <div className="flex flex-col min-h-screen bg-[url('https://images.pexels.com/photos/8892/pexels-photo.jpg')] bg-repeat-y bg-top bg-cover">
+        <header className="bg-[url('https://images.pexels.com/photos/129728/pexels-photo-129728.jpeg')] bg-cover bg-center bg-no-repeat rounded-md p-6 m-2 flex-none items-center">
           {selectedGame ? (
-            <div className="flex flex-row justify-between">
+            <div className="flex flex-row justify-between items-center">
               <button
                 className="bg-stone-500 hover:bg-stone-600 text-white font-bold px-3 py-1 rounded-lg shadow-sm hover:scale-105"
                 onClick={() => setSelectedGame(null)}
@@ -120,16 +121,16 @@ export default function App() {
                       <>
                         {gameData.winner === "x" && (
                           <>
-                            <Stone colour="black" cursor={false} /> <span>won!</span>
+                            <div className="animate-bounce z-50 w-full h-full text-5xl"><Stone game={gameData} colour="black" cursor={false} /> <span>wins!</span></div>
                           </>
                         )}
                         {gameData.winner === "o" && (
                           <>
-                            <Stone colour="white" cursor={false} /> <span>won!</span>
+                            <div className="animate-bounce z-50 w-full h-full text-5xl"></div><Stone game={gameData} colour="white" cursor={false} /> <span>wins!</span><div/>
                           </>
                         )}
                         {gameData.winner === "draw" && (
-                          <span>nobody wins</span>
+                          <span className="animate-bounce z-50 w-full h-full text-5xl">nobody <span className="text-xs">(ever)</span> wins!</span>
                         )}
                       </>
                     ) : (
@@ -152,7 +153,7 @@ export default function App() {
               <div className="">Game #{gameData?.id}</div>
             </div>
           ) : (
-            <div className="flex flex-row justify-between">
+            <div className="flex flex-row justify-between items-center">
               <div className="text-2xl font-extrabold text-gray-800">Get Go-ing</div>
               <div className="flex flex-col">
                 <button className="bg-stone-500 hover:bg-stone-600 text-white font-bold px-3 py-1 rounded-lg shadow-sm hover:scale-105" onClick={handleCreateGame}>Create New Game</button>
@@ -186,9 +187,11 @@ export default function App() {
             )}
           </>
         )}
-        <footer className="flex-none self-center">
+        <footer className="flex-none flex flex-row justify-evenly ">
+          {/* {gameData.x_pass && <Stone game={gameData} colour="black" cursor={false} />} */}
           {selectedGame && <Trash onClick={handlePass}/>}
           {/* {selectedGame && <button className="bg-amber-300 hover:bg-amber-500 hover:border-amber-700 rounded-md px-4 py-1 mb-2" onClick={handlePass}>Pass</button>} */}
+          {/* {gameData.o_pass && <Stone game={gameData} colour="white" cursor={false} />} */}
         </footer>
       </div>
     </>

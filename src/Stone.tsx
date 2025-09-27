@@ -1,8 +1,11 @@
-const Stone = (props: { colour, cursor }) => {
+const Stone = (props: { game, colour, cursor }) => {
 	const gradientId = `${props.colour}-gradient`
 
+	const colourToXO = `${props.colour === "black" ? "x" : "o"}`
+	const stoneStyle = `w-full h-full translate-y-[-1px] scale-[1.02] ${!props.game?.winner ? "" : props.game?.winner == colourToXO ? "animate-ping" : "opacity-50" }`
+
 	return (
-		<svg viewBox="0 0 100 100" className="w-full h-full translate-y-[-1px] scale-[1.02]">
+		<svg viewBox="0 0 100 100" className={stoneStyle}>
 			<defs>
 				<radialGradient id={gradientId} cx="10%" cy="10%" r="90%">
 					{props.colour === "black" ? (
