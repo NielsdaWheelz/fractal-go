@@ -103,8 +103,8 @@ export default function App() {
 
   return (
     <>
-      <div className="flex flex-col bg-[url('https://images.pexels.com/photos/8892/pexels-photo.jpg')] bg-cover bg-center bg-no-repeat opacity-90">
-        <header className="bg-gray-100 rounded-md p-6 m-2 flex-none">
+      <div className="flex flex-col min-h-screen bg-[url('https://images.pexels.com/photos/8892/pexels-photo.jpg')] bg-repeat-y bg-top bg-cover">
+        <header className="bg-[url('https://images.pexels.com/photos/129728/pexels-photo-129728.jpeg')] bg-cover bg-center bg-no-repeat rounded-md p-6 m-2 flex-none">
           {selectedGame ? (
             <div className="flex flex-row justify-between">
               <button
@@ -120,16 +120,16 @@ export default function App() {
                       <>
                         {gameData.winner === "x" && (
                           <>
-                            <Stone colour="black" cursor={false} /> <span>won!</span>
+                            <div className="animate-bounce z-50 w-full h-full text-5xl"><Stone game={gameData} colour="black" cursor={false} /> <span>won!</span></div>
                           </>
                         )}
                         {gameData.winner === "o" && (
                           <>
-                            <Stone colour="white" cursor={false} /> <span>won!</span>
+                            <div className="animate-bounce z-50 w-full h-full text-5xl"></div><Stone game={gameData} colour="white" cursor={false} /> <span>won!</span><div/>
                           </>
                         )}
                         {gameData.winner === "draw" && (
-                          <span>nobody wins</span>
+                          <span className="animate-bounce z-50 w-full h-full text-5xl">nobody <span className="text-xs">(ever)</span> wins!</span>
                         )}
                       </>
                     ) : (
