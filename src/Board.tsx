@@ -52,12 +52,20 @@ const Board = (props: { game: GameState }) => {
     audio.play()
   };
 
+  const gameOver = props.game.winner !== null
+
   return (
     <div className={`w-[min(70vw,70vh)] h-[min(70vw,70vh)] grid p-2 self-center ${gridClass} bg-[url('https://images.pexels.com/photos/129728/pexels-photo-129728.jpeg')] bg-cover bg-center bg-no-repeat opacity-90`}>
       <CursorStone enabled={props.game.id} colour={props.game.currentPlayer === "x" ? "black" : "white"} size={cellSize} />
       {cells.map(({ row, col }) => {
         const isInteriorRow = row < size - 1;
         const isInteriorCol = col < size - 1;
+        const isBlack = props.game.board[row][col] === "x"
+        const slideClass = gameOver
+          ? isBlack
+            ? "-translate-x-[200%]" // slide left
+            : "translate-x-[200%]" // slide right
+          : "translate-x-0"
         return (
           <button
             key={`${row}-${col}`}

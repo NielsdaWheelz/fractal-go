@@ -186,9 +186,11 @@ export default function App() {
             )}
           </>
         )}
-        <footer className="flex-none self-center">
+        <footer className="flex-none flex flex-row justify-evenly ">
+          {/* {gameData.x_pass && <Stone game={gameData} colour="black" cursor={false} />} */}
           {selectedGame && <Trash onClick={handlePass}/>}
           {/* {selectedGame && <button className="bg-amber-300 hover:bg-amber-500 hover:border-amber-700 rounded-md px-4 py-1 mb-2" onClick={handlePass}>Pass</button>} */}
+          {/* {gameData.o_pass && <Stone game={gameData} colour="white" cursor={false} />} */}
         </footer>
       </div>
     </>
