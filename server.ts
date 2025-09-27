@@ -23,9 +23,15 @@ io.on("connection", async (socket) => {
 
     socket.emit("init", await getGames())
 
-    socket.on('game:join', (id) => socket.join('game:'+id))
+    socket.on('game:join', (id) => {
+        console.log(`[socket] ${socket.id} joining room game:${id}`)
+        socket.join('game:'+id)
+    })
 
-    socket.on('game:leave', (id) => socket.leave('game:'+id))
+    socket.on('game:leave', (id) => {
+        console.log(`[socket] ${socket.id} leaving room game:${id}`)
+        socket.leave('game:'+id)
+    })
 
     socket.on("games:created", async ({ size }) => {
         const result = await createGame(size)
@@ -36,6 +42,7 @@ io.on("connection", async (socket) => {
         const result = await move(id, row, col)
         if (!result || !result.game) return
         const { game, games } = result
+        console.log(`[emit] game:updated -> game:${id} (move ${row},${col})`)
         io.to(`game:${id}`).emit("game:updated", game)
         io.emit("games:updated", games)
     })
@@ -44,6 +51,7 @@ io.on("connection", async (socket) => {
         const result = await pass(id)
         if (!result) return
         const {game, games} = result
+        console.log(`[emit] game:updated -> game:${id} (pass)`)        
         io.to(`game:${id}`).emit("game:updated", game)
         io.emit("games:updated", games)
     })

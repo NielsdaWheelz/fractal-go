@@ -48,7 +48,8 @@ export default function App() {
     }
   }, [queryClient])
 
-  // detects user connection and which game user is joined to. changes when the active game (state) changes
+  // Detects connection and keeps the client joined to the current game's room.
+  // Ensures 'connect' listener is always cleaned up to avoid leaks and stale closures.
   useEffect(() => {
     const id = selectedGame?.id
 
@@ -57,7 +58,7 @@ export default function App() {
     }
 
     const handleConnect = () => {
-      if (selectedGame?.id) {
+      if (id) {
         socket.emit('game:join', id)
       }
     }
@@ -66,8 +67,8 @@ export default function App() {
     return () => {
       if (id) {
         socket.emit('game:leave', id)
-        socket.off('connect', handleConnect)
       }
+      socket.off('connect', handleConnect)
     }
   }, [selectedGame?.id])
 
