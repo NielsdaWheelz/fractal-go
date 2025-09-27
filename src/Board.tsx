@@ -37,7 +37,7 @@ const Board = (props: { game: GameState }) => {
   };
 
   return (
-    <div className={`min-h-0 min-w-screen grid aspect-square p-2 self-center ${gridClass} bg-[url('https://images.pexels.com/photos/129728/pexels-photo-129728.jpeg')] bg-cover bg-center bg-no-repeat opacity-90`}>
+    <div className={`w-[min(70vw,70vh)] h-[min(70vw,70vh)] grid p-2 self-center ${gridClass} bg-[url('https://images.pexels.com/photos/129728/pexels-photo-129728.jpeg')] bg-cover bg-center bg-no-repeat opacity-90`}>
       <CursorStone enabled={props.game.id} colour={props.game.currentPlayer === "x" ? "black" : "white"} size={size*2} />
       {cells.map(({ row, col }) => {
         const isInteriorRow = row < size - 1;

@@ -103,7 +103,7 @@ export default function App() {
 
   return (
     <>
-      <div className="flex flex-col h-dvh bg-[url('https://images.pexels.com/photos/8892/pexels-photo.jpg')] bg-cover bg-center bg-no-repeat opacity-90">
+      <div className="flex flex-col bg-[url('https://images.pexels.com/photos/8892/pexels-photo.jpg')] bg-cover bg-center bg-no-repeat opacity-90">
         <header className="bg-gray-100 rounded-md p-6 m-2 flex-none">
           {selectedGame ? (
             <div className="flex flex-row justify-between">
