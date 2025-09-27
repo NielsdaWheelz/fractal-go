@@ -103,12 +103,12 @@ export default function App() {
 
   return (
     <>
-      <div className="flex flex-col h-dvh">
+      <div className="flex flex-col h-dvh bg-[url('https://images.pexels.com/photos/8892/pexels-photo.jpg')] bg-cover bg-center bg-no-repeat opacity-90">
         <header className="bg-gray-100 rounded-md p-6 m-2 flex-none">
           {selectedGame ? (
             <div className="flex flex-row justify-between">
               <button
-                className="bg-blue-500 text-sm border-blue-700 text-white p-1 rounded-md hover:bg-blue-700"
+                className="bg-stone-500 hover:bg-stone-600 text-white font-bold px-3 py-1 rounded-lg shadow-sm hover:scale-105"
                 onClick={() => setSelectedGame(null)}
               >
                 Go Back
@@ -153,9 +153,9 @@ export default function App() {
             </div>
           ) : (
             <div className="flex flex-row justify-between">
-              <div className="text-2xl font-bold align-middle justify-center">Get Go-ing</div>
+              <div className="text-2xl font-extrabold text-gray-800">Get Go-ing</div>
               <div className="flex flex-col">
-                <button className="bg-green-600 text-white hover:bg-green-800 rounded-md border-1 border-green-800 py-1 px-2" onClick={handleCreateGame}>Create New Game</button>
+                <button className="bg-stone-500 hover:bg-stone-600 text-white font-bold px-3 py-1 rounded-lg shadow-sm hover:scale-105" onClick={handleCreateGame}>Create New Game</button>
                 <div className="flex flex-row justify-center">
                   {sizes.map((size) => (
                     <button key={size} onClick={() => setBoardSize(size)} className={sizeSwitchStyle(size)}>{size}</button>
