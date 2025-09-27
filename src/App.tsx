@@ -104,9 +104,9 @@ export default function App() {
   return (
     <>
       <div className="flex flex-col min-h-screen bg-[url('https://images.pexels.com/photos/8892/pexels-photo.jpg')] bg-repeat-y bg-top bg-cover">
-        <header className="bg-[url('https://images.pexels.com/photos/129728/pexels-photo-129728.jpeg')] bg-cover bg-center bg-no-repeat rounded-md p-6 m-2 flex-none">
+        <header className="bg-[url('https://images.pexels.com/photos/129728/pexels-photo-129728.jpeg')] bg-cover bg-center bg-no-repeat rounded-md p-6 m-2 flex-none items-center">
           {selectedGame ? (
-            <div className="flex flex-row justify-between">
+            <div className="flex flex-row justify-between items-center">
               <button
                 className="bg-stone-500 hover:bg-stone-600 text-white font-bold px-3 py-1 rounded-lg shadow-sm hover:scale-105"
                 onClick={() => setSelectedGame(null)}
@@ -152,7 +152,7 @@ export default function App() {
               <div className="">Game #{gameData?.id}</div>
             </div>
           ) : (
-            <div className="flex flex-row justify-between">
+            <div className="flex flex-row justify-between items-center">
               <div className="text-2xl font-extrabold text-gray-800">Get Go-ing</div>
               <div className="flex flex-col">
                 <button className="bg-stone-500 hover:bg-stone-600 text-white font-bold px-3 py-1 rounded-lg shadow-sm hover:scale-105" onClick={handleCreateGame}>Create New Game</button>
